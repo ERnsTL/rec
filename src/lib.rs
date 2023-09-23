@@ -212,7 +212,7 @@ mod tests {
 
     #[test]
     fn it_works() -> Result<(), Err> {
-        let buf = include_str!("/home/t/dev/rust/rec/src/test.rec");
+        let buf = include_str!("test.rec");
         let db = DB::new(buf).unwrap();
 
         let result = QueryBuilder::new(&db)
@@ -233,13 +233,13 @@ mod tests {
 
     #[bench]
     fn bench_parse(b: &mut Bencher) {
-        let buf = include_str!("/home/t/dev/rust/rec/src/test.rec");
+        let buf = include_str!("test.rec");
         b.iter(|| DB::new(black_box(buf)).unwrap());
     }
 
     #[bench]
     fn bench_find(b: &mut Bencher) {
-        let buf = include_str!("/home/t/dev/rust/rec/src/test.rec");
+        let buf = include_str!("test.rec");
         let db = DB::new(black_box(buf)).unwrap();
         b.iter(|| {
             QueryBuilder::new(&db)
