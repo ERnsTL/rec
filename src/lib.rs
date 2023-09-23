@@ -16,7 +16,7 @@ use parser::Parser;
 use std::{
     collections::{HashMap, HashSet},
     error::Error,
-    fmt::{self, Display, Formatter, Pointer},
+    fmt::{self, Display, Formatter},
     fs,
     path::Path,
     str::FromStr,
