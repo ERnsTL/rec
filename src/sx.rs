@@ -163,7 +163,7 @@ impl cmp::PartialOrd for Op {
                 And => 2,
                 Or => 1,
             }
-        };
+        }
 
         Some(ord(self).cmp(&ord(other)))
     }
@@ -359,7 +359,7 @@ fn find_first(nodes: &[Node]) -> Option<usize> {
     struct Paren {
         lvl: usize,
         idx: usize,
-    };
+    }
 
     let mut max_paren = Paren { lvl: 0, idx: 0 };
 
