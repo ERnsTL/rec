@@ -68,7 +68,7 @@ pub enum Kind {
     UUID,
     Confidential,
     Range(isize, isize),
-    Regexp(Regex),
+    Regexp(Regex),  //NOTE: does not implement PartialEq e.g. for assert_eq!, see https://github.com/rust-lang/regex/issues/178
     Viz(String),
     Enum(HashSet<String>),
 }
