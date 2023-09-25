@@ -250,7 +250,7 @@ fn parse_bound(v: &str) -> Result<isize, Err> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Meta;
+    use crate::{Meta, Constraint};
 
     #[test]
     fn parser_rec_type() {
@@ -356,5 +356,107 @@ Notes: very secure password
             .collect::<Vec<_>>();
 
         assert_eq!(db.fields, expected)
+    }
+
+    /// test in manual 1.2 A Litte Example
+    #[test]
+    fn parser_1_2_a_little_example() {
+        const TEXT: &str = "
+# -*- mode: rec -*-
+
+%rec: Book
+%mandatory: Title
+%type: Location enum loaned home unknown
+%doc:
++ A book in my personal collection.
+
+Title: GNU Emacs Manual
+Author: Richard M. Stallman
+Publisher: FSF
+Location: home
+
+Title: The Colour of Magic
+Author: Terry Pratchett
+Location: loaned
+
+Title: Mio Cid
+Author: Anonymous
+Location: home
+
+Title: chapters.gnu.org administration guide
+Author: Nacho Gonzalez
+Author: Jose E. Marchesi
+Location: unknown
+
+Title: Yeelong User Manual
+Location: home
+
+# End of books.rec
+";
+        let db = DB::new(TEXT).unwrap();
+
+        // check fields
+        let fields_expected = vec!["Title", "Author", "Publisher", "Location"]
+            .iter()
+            .map(ToOwned::to_owned)
+            .collect::<Vec<_>>();
+        assert_eq!(db.fields, fields_expected);
+
+        // check primary key
+        assert_eq!(db.primary_key, None);
+
+        // check sort field
+        assert_eq!(db.sort_field, None);
+
+        // check doc
+        assert_eq!(db.doc, Some("A book in my personal collection.".to_owned()));
+
+        // check types and constraints
+        let type_title = db.types.get("Title");
+        let type_location = db.types.get("Location");
+        let type_author = db.types.get("Author");
+        let type_publisher = db.types.get("Publisher");
+
+        assert!(type_title.is_some());
+        assert!(type_location.is_some());
+        assert!(type_author.is_some());
+        assert!(type_publisher.is_some());
+
+        //Title constraint mandatory
+        let type_title2 = type_title.unwrap();
+        assert!(!type_title2.unique);
+        assert!(type_title2.constraint.is_some());
+        assert!(matches!(type_title2.constraint.as_ref().unwrap(), Constraint::Mandatory));
+        assert!(matches!(type_title2.kind, Kind::Line));
+
+        //Location enum loaned home unknown
+        let type_location2 = type_location.unwrap();
+        assert!(!type_location2.unique);
+        assert!(type_location2.constraint.is_none());
+        assert!(matches!(type_location2.kind, Kind::Enum(_)));
+        match &type_location2.kind {
+            Kind::Enum(set) => {
+                let mut left = set.iter().collect::<Vec<_>>();
+                left.sort();
+                let mut right = vec!["loaned", "home", "unknown"];
+                right.sort();
+                assert_eq!(left, right);
+            }
+            _ => { assert!(false); }
+        }
+
+        //Author optional no-constraints
+        let type_author2 = type_author.unwrap();
+        assert!(!type_author2.unique);
+        assert!(type_author2.constraint.is_none());
+        assert!(matches!(type_author2.kind, Kind::Line));
+
+        //Publisher optional no-constraints
+        let type_publisher2 = type_publisher.unwrap();
+        assert!(!type_publisher2.unique);
+        assert!(type_publisher2.constraint.is_none());
+
+        // check record values
+        //TODO
     }
 }
