@@ -457,6 +457,48 @@ Location: home
         assert!(type_publisher2.constraint.is_none());
 
         // check record values
-        //TODO
+        assert_eq!(db.records.len(), 5);
+
+        assert_eq!(db.records[0].len(), 4);
+        assert!(db.records[0].contains_key("Title"));
+        assert!(db.records[0].contains_key("Author"));
+        assert!(db.records[0].contains_key("Publisher"));
+        assert!(db.records[0].contains_key("Location"));
+        assert_eq!(db.records[0].get("Title").unwrap(), &Value::Line("GNU Emacs Manual".to_owned()));
+        assert_eq!(db.records[0].get("Author").unwrap(), &Value::Line("Richard M. Stallman".to_owned()));
+        assert_eq!(db.records[0].get("Publisher").unwrap(), &Value::Line("FSF".to_owned()));
+        assert_eq!(db.records[0].get("Location").unwrap(), &Value::Enum("home".to_owned()));
+
+        assert_eq!(db.records[1].len(), 3);
+        assert!(db.records[1].contains_key("Title"));
+        assert!(db.records[1].contains_key("Author"));
+        assert!(db.records[1].contains_key("Location"));
+        assert_eq!(db.records[1].get("Title").unwrap(), &Value::Line("The Colour of Magic".to_owned()));
+        assert_eq!(db.records[1].get("Author").unwrap(), &Value::Line("Terry Pratchett".to_owned()));
+        assert_eq!(db.records[1].get("Location").unwrap(), &Value::Enum("loaned".to_owned()));
+
+        assert_eq!(db.records[2].len(), 3);
+        assert!(db.records[2].contains_key("Title"));
+        assert!(db.records[2].contains_key("Author"));
+        assert!(db.records[2].contains_key("Location"));
+        assert_eq!(db.records[2].get("Title").unwrap(), &Value::Line("Mio Cid".to_owned()));
+        assert_eq!(db.records[2].get("Author").unwrap(), &Value::Line("Anonymous".to_owned()));
+        assert_eq!(db.records[2].get("Location").unwrap(), &Value::Enum("home".to_owned()));
+
+        assert_eq!(db.records[3].len(), 3);
+        assert!(db.records[3].contains_key("Title"));
+        assert!(db.records[3].contains_key("Author"));
+        assert!(db.records[3].contains_key("Location"));
+        assert_eq!(db.records[3].get("Title").unwrap(), &Value::Line("chapters.gnu.org administration guide".to_owned()));
+        //assert_eq!(db.records[3].get("Author").unwrap(), &Value::Line("Nacho Gonzalez".to_owned()));
+        // TODO no API for multi-fields yet
+        assert_eq!(db.records[3].get("Author").unwrap(), &Value::Line("Jose E. Marchesi".to_owned()));
+        assert_eq!(db.records[3].get("Location").unwrap(), &Value::Enum("unknown".to_owned()));
+
+        assert_eq!(db.records[4].len(), 2);
+        assert!(db.records[4].contains_key("Title"));
+        assert!(db.records[4].contains_key("Location"));
+        assert_eq!(db.records[4].get("Title").unwrap(), &Value::Line("Yeelong User Manual".to_owned()));
+        assert_eq!(db.records[4].get("Location").unwrap(), &Value::Enum("home".to_owned()));
     }
 }
