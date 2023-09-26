@@ -660,4 +660,55 @@ FooNotgood!: Customer
             }
         }
     }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_field_name_case_sensitive() {
+        const TEXT: &str = "
+Name: Foo1
+name: Foo2
+nAmE: Foo3
+";
+        let db = DB::new(TEXT).unwrap();
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 records
+        assert_eq!(db.records.len(), 1);
+        // 3 fields on that record
+        assert_eq!(db.records[0].len(), 3);
+
+        // contains field "Name"
+        assert_eq!(db.records[0].contains_key("Name"), true);
+        assert_eq!(db.records[0].contains_key("name"), true);
+        assert_eq!(db.records[0].contains_key("nAmE"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(db.records[0].is_vec("Name"), false);
+        assert_eq!(db.records[0].is_vec("name"), false);
+        assert_eq!(db.records[0].is_vec("nAmE"), false);
+        // Name is a Line type
+        match &db.records[0].get("Name").unwrap() {
+            Value::Line(thestr) => {
+                // Name matches
+                assert_eq!(*thestr, "Foo1".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // name is a Line type
+        match &db.records[0].get("name").unwrap() {
+            Value::Line(thestr) => {
+                // Name matches
+                assert_eq!(*thestr, "Foo2".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // nAmE is a Line type
+        match &db.records[0].get("nAmE").unwrap() {
+            Value::Line(thestr) => {
+                // Name matches
+                assert_eq!(*thestr, "Foo3".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }
 }
