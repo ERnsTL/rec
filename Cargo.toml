@@ -4,6 +4,8 @@ version = "0.1.0-git"
 authors = ["Timofey <ouxya@pm.me>", "Ernst Rohlicek <ernst@rohlicek.at>"]
 edition = "2021"
 
+# TODO update dependencies!
+
 [dependencies]
 regex = "1.4.2"
 rand = "0.7.3"
