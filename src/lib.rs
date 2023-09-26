@@ -21,13 +21,14 @@ use std::{
     path::Path,
     str::FromStr,
 };
+use multimap::MultiMap;
 
 use chrono::{DateTime, Utc};
 use regex::Regex;
 use uuid::Uuid;
 
 pub type Key = String;
-pub type Record = HashMap<Key, Value>;
+pub type Record = MultiMap<Key, Value>;
 
 #[derive(Debug, Default)]
 pub struct Meta {
@@ -187,7 +188,7 @@ impl<'a> QueryBuilder<'a> {
             }
 
             if let Some(ref query) = self.contains {
-                if !rec.values().any(|f| f.to_string().contains(query)) {
+                if !rec.flat_iter().any(|f| f.1.to_string().contains(query)) {
                     continue;
                 }
             }

@@ -552,12 +552,12 @@ fn parse_field<I: Iterator<Item = char>>(it: &mut iter::Peekable<I>) -> (String,
 mod tests {
     use super::super::Value;
     use super::*;
-    use std::collections::HashMap;
+    use multimap::MultiMap;
 
     macro_rules! expect {
         ($a:expr) => {
             let sx = Sx::new($a).expect("parse");
-            let empty = HashMap::new();
+            let empty = MultiMap::new();
 
             if !sx.eval(&empty).expect("eval") {
                 panic!("{} evaluated to false. \nast: {:#?}", $a, sx.0)
@@ -595,7 +595,7 @@ mod tests {
         expect!("0.2 + 0.1 = 0.3");
 
         // working with records
-        let mut record: Record = HashMap::new();
+        let mut record: Record = MultiMap::new();
         record.insert("Email".to_owned(), Value::Line("foo@bar.com".to_owned()));
         record.insert("Age".to_owned(), Value::Int(18));
 
