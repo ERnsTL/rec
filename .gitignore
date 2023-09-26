@@ -22,6 +22,7 @@ Cargo.lock
 # Visual Studio (excerpt)
 
 # VS Code files for those working on multiple tools
+.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
