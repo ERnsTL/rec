@@ -1,6 +1,6 @@
 [package]
 name = "rec"
-version = "0.1.0"
+version = "0.1.0-git"
 authors = ["Timofey <ouxya@pm.me>", "Ernst Rohlicek <ernst@rohlicek.at>"]
 edition = "2021"
 
