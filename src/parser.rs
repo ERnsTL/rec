@@ -358,7 +358,7 @@ Notes: very secure password
         assert_eq!(db.fields, expected)
     }
 
-    /// test in manual 1.2 A Litte Example
+    /// see manual 1.2 A Litte Example
     #[test]
     fn parser_1_2_a_little_example() {
         const TEXT: &str = "
@@ -499,5 +499,34 @@ Location: home
         assert!(db.records[4].contains_key("Location"));
         assert_eq!(db.records[4].get("Title").unwrap(), &Value::Line("Yeelong User Manual".to_owned()));
         assert_eq!(db.records[4].get("Location").unwrap(), &Value::Enum("home".to_owned()));
+    }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_field_example() {
+        const TEXT: &str = "
+Name: Ada Lovelace
+";
+        let db = DB::new(TEXT).unwrap();
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 record
+        assert_eq!(db.records.len(), 1);
+        // 1 field on that record
+        assert_eq!(db.records[0].len(), 1);
+        // contains just field "Name"
+        assert_eq!(db.records[0].contains_key("Name"), true);
+        // field "Name" has just 1 value
+        assert_eq!(db.records[0].is_vec("Name"), false);
+        // name is a Line type
+        let name = db.records[0].get("Name").unwrap();
+        match &name {
+            Value::Line(thestr) => {
+                // Name is Ada Lovelace
+                assert_eq!(*thestr, "Ada Lovelace".to_owned());
+            }
+            _ => { assert!(false); }
+        }
     }
 }
