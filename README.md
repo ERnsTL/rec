@@ -1,4 +1,4 @@
-# rec
+# rec - Recfiles for Rust!
 
 Incomplete implementation for handling awesome file format called [recfile](https://www.gnu.org/software/recutils/manual/recutils.html).
 
