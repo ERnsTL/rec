@@ -1,15 +1,31 @@
 # rec
+
 Incomplete implementation for handling awesome file format called [recfile](https://www.gnu.org/software/recutils/manual/recutils.html).
+
 Supports parsing databases, sex'es, fields encryption and some basic queries. Also my first time writing parsers in Rust.
 
 ## Status
 
 Very WIP.
 
-## Features
+## Compatibility
 
-Features missing compared to GNU recutils (TODO compare with as-is tests base):
+This library is compatible with the format and examples described in the [GNU recutils manual](https://www.gnu.org/software/recutils/manual/) for GNU recutils version 1.8, 3 January 2019. (When a new version is realeased, compare manual structure and diff for changes and pick up changes in tests, adjust implementation accordingly.)
 
+The following examples and definitions are covered by unit tests, listed by chapter and section:
+
+* 1 Introduction: Nothing to comply with.
+  * 1.1 Purpose: Nothing to comply with.
+  * 1.2 A Little Example:  Code example 1. TODO cmdline example recsel.
+* 2 The Rec Format:
+  * 2.1 Fields
+  * 2.2 Records
+  * 2.3 Comments
+  * 2.4 Record Descriptors
+    * 2.4.1 Record Sets
+    * 2.4.2 Naming Record Types
+    * 2.4.3 Documenting Records
+    * 2.4.4 Record Sets Properties
 * 2 rec format
   * multi-line fields
   * long line fields
@@ -73,7 +89,7 @@ Features missing compared to GNU recutils (TODO compare with as-is tests base):
 * 18 regular expressions
 * 19 date input formats
 
-## Other
+## Remarks
 
 My hope is that some day this library will become part of bigger GUI program for managing your stuff with plain-text databases. Stale while im trying to figure out if writing complex GUI in Rust today is even possible.
 
