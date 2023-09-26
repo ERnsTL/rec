@@ -711,4 +711,78 @@ nAmE: Foo3
             _ => { assert!(false); }
         }
     }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_valid_field_name_examples() {
+        const TEXT: &str = "
+Foo:
+foo:
+A23:
+ab1:
+A_Field:
+";
+        let db = DB::new(TEXT).unwrap();
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 records
+        assert_eq!(db.records.len(), 1);
+        // 3 fields on that record
+        assert_eq!(db.records[0].len(), 5);
+
+        // contains field "Name"
+        assert_eq!(db.records[0].contains_key("Foo"), true);
+        assert_eq!(db.records[0].contains_key("foo"), true);
+        assert_eq!(db.records[0].contains_key("A23"), true);
+        assert_eq!(db.records[0].contains_key("ab1"), true);
+        assert_eq!(db.records[0].contains_key("A_Field"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(db.records[0].is_vec("Foo"), false);
+        assert_eq!(db.records[0].is_vec("foo"), false);
+        assert_eq!(db.records[0].is_vec("A23"), false);
+        assert_eq!(db.records[0].is_vec("ab1"), false);
+        assert_eq!(db.records[0].is_vec("A_Field"), false);
+        // Foo is a Line type
+        let empty = "".to_owned();
+        match &db.records[0].get("Foo").unwrap() {
+            Value::Line(thestr) => {
+                // value matches
+                assert_eq!(*thestr, empty);
+            }
+            _ => { assert!(false); }
+        }
+        // foo is a Line type
+        match &db.records[0].get("foo").unwrap() {
+            Value::Line(thestr) => {
+                // Name matches
+                assert_eq!(*thestr, empty);
+            }
+            _ => { assert!(false); }
+        }
+        // A23 is a Line type
+        match &db.records[0].get("A23").unwrap() {
+            Value::Line(thestr) => {
+                // Name matches
+                assert_eq!(*thestr, empty);
+            }
+            _ => { assert!(false); }
+        }
+        // ab1 is a Line type
+        match &db.records[0].get("ab1").unwrap() {
+            Value::Line(thestr) => {
+                // Name matches
+                assert_eq!(*thestr, empty);
+            }
+            _ => { assert!(false); }
+        }
+        // A_Field is a Line type
+        match &db.records[0].get("A_Field").unwrap() {
+            Value::Line(thestr) => {
+                // Name matches
+                assert_eq!(*thestr, empty);
+            }
+            _ => { assert!(false); }
+        }
+    }
 }
