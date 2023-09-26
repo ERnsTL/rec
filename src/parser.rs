@@ -98,6 +98,11 @@ impl Parser {
     fn parse_field(&mut self, key: &str, value: &str) -> Result<(), Err> {
         let mut rec = self.current_record.take().unwrap_or_default();
 
+        // check for field name regular expression, see manual 2.1 Fields - field name regular expression
+        if !FIELD_RX.is_match(key) {
+            return Err("non-conforming field name".into());
+        }
+
         if !self.db.fields.contains(&key.to_owned()) {
             self.db.fields.insert(rec.len(), key.to_owned());
         }
