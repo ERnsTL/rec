@@ -529,4 +529,130 @@ Name: Ada Lovelace
             _ => { assert!(false); }
         }
     }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_field_name_regular_expression1() {
+        const TEXT: &str = "
+$rec-omatic: Customer
+";
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_field_name_regular_expression2() {
+        const TEXT: &str = "
+1test: Customer
+";
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_field_name_regular_expression3() {
+        const TEXT: &str = "
+-notgood: Customer
+";
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_field_name_regular_expression4() {
+        const TEXT: &str = "
+good-but-not-good: Customer
+";
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_field_name_regular_expression5() {
+        const TEXT: &str = "
+underscores_ok: Customer
+";
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_field_name_regular_expression6() {
+        const TEXT: &str = "
+FooNotgood!: Customer
+";
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_field_name_regular_expression7() {
+        const TEXT: &str = "
+!: Customer
+";
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
 }
