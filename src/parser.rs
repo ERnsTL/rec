@@ -490,9 +490,8 @@ Location: home
         assert!(db.records[3].contains_key("Author"));
         assert!(db.records[3].contains_key("Location"));
         assert_eq!(db.records[3].get("Title").unwrap(), &Value::Line("chapters.gnu.org administration guide".to_owned()));
-        //assert_eq!(db.records[3].get("Author").unwrap(), &Value::Line("Nacho Gonzalez".to_owned()));
-        // TODO no API for multi-fields yet
-        assert_eq!(db.records[3].get("Author").unwrap(), &Value::Line("Jose E. Marchesi".to_owned()));
+        assert_eq!(db.records[3].get_vec("Author").unwrap()[0], Value::Line("Nacho Gonzalez".to_owned()));
+        assert_eq!(db.records[3].get_vec("Author").unwrap()[1], Value::Line("Jose E. Marchesi".to_owned()));
         assert_eq!(db.records[3].get("Location").unwrap(), &Value::Enum("unknown".to_owned()));
 
         assert_eq!(db.records[4].len(), 2);
