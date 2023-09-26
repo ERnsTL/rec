@@ -7,8 +7,8 @@ use lazy_static::lazy_static;
 use regex::Regex;
 
 lazy_static! {
-    static ref FIELD_RX: Regex = Regex::new("[a-zA-Z%][a-zA-Z0-9_]*").unwrap();
-    static ref ENUM_RX: Regex = Regex::new("[a-zA-Z0-9][a-zA-Z0-9_-]*").unwrap();
+    static ref FIELD_RX: Regex = Regex::new("^[a-zA-Z%][a-zA-Z0-9_]*$").unwrap();   //TODO performance or accuracy with ^ and $ compared to without?
+    static ref ENUM_RX: Regex = Regex::new("^[a-zA-Z0-9][a-zA-Z0-9_-]*$").unwrap();
 }
 
 #[derive(Debug, Default)]
