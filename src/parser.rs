@@ -927,7 +927,40 @@ A_Field:
         match &db.records[0].get("Foo").unwrap() {
             Value::Line(thestr) => {
                 // value matches
+                // NOTE: GNU recutils also does not return the " " after "Foo:"
                 assert_eq!(*thestr, "\nbar2\n bar3".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_escaping_a_newline4() {
+        const TEXT: &str = "Foo: 
++ bar2
++  bar3
+";  // NOTE: difference to previous test is two spaces after "Foo:" the last of which should be preserved
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 records
+        assert_eq!(db.records.len(), 1);
+        // 1 fields on that record
+        assert_eq!(db.records[0].len(), 1);
+
+        // contains field "Foo"
+        assert_eq!(db.records[0].contains_key("Foo"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(db.records[0].is_vec("Foo"), false);
+        // Name is a Line type
+        match &db.records[0].get("Foo").unwrap() {
+            Value::Line(thestr) => {
+                // value matches
+                // NOTE: GNU recutils preserves the space
+                assert_eq!(*thestr, " \nbar2\n bar3".to_owned());
             }
             _ => { assert!(false); }
         }
