@@ -366,8 +366,7 @@ Notes: very secure password
     /// see manual 1.2 A Litte Example
     #[test]
     fn parser_1_2_a_little_example() {
-        const TEXT: &str = "
-# -*- mode: rec -*-
+        const TEXT: &str = "# -*- mode: rec -*-
 
 %rec: Book
 %mandatory: Title
@@ -509,8 +508,7 @@ Location: home
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_field_example() {
-        const TEXT: &str = "
-Name: Ada Lovelace
+        const TEXT: &str = "Name: Ada Lovelace
 ";
         let db = DB::new(TEXT).unwrap();
 
@@ -538,8 +536,7 @@ Name: Ada Lovelace
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_field_name_regular_expression1() {
-        const TEXT: &str = "
-$rec-omatic: Customer
+        const TEXT: &str = "$rec-omatic: Customer
 ";
         match DB::new(TEXT) {
             Ok(_) => {
@@ -556,8 +553,7 @@ $rec-omatic: Customer
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_field_name_regular_expression2() {
-        const TEXT: &str = "
-1test: Customer
+        const TEXT: &str = "1test: Customer
 ";
         match DB::new(TEXT) {
             Ok(_) => {
@@ -574,8 +570,7 @@ $rec-omatic: Customer
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_field_name_regular_expression3() {
-        const TEXT: &str = "
--notgood: Customer
+        const TEXT: &str = "-notgood: Customer
 ";
         match DB::new(TEXT) {
             Ok(_) => {
@@ -592,8 +587,7 @@ $rec-omatic: Customer
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_field_name_regular_expression4() {
-        const TEXT: &str = "
-good-but-not-good: Customer
+        const TEXT: &str = "good-but-not-good: Customer
 ";
         match DB::new(TEXT) {
             Ok(_) => {
@@ -610,8 +604,7 @@ good-but-not-good: Customer
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_field_name_regular_expression5() {
-        const TEXT: &str = "
-underscores_ok: Customer
+        const TEXT: &str = "underscores_ok: Customer
 ";
         match DB::new(TEXT) {
             Ok(_) => {
@@ -628,8 +621,7 @@ underscores_ok: Customer
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_field_name_regular_expression6() {
-        const TEXT: &str = "
-FooNotgood!: Customer
+        const TEXT: &str = "FooNotgood!: Customer
 ";
         match DB::new(TEXT) {
             Ok(_) => {
@@ -646,8 +638,7 @@ FooNotgood!: Customer
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_field_name_regular_expression7() {
-        const TEXT: &str = "
-!: Customer
+        const TEXT: &str = "!: Customer
 ";
         match DB::new(TEXT) {
             Ok(_) => {
@@ -664,8 +655,7 @@ FooNotgood!: Customer
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_field_name_case_sensitive() {
-        const TEXT: &str = "
-Name: Foo1
+        const TEXT: &str = "Name: Foo1
 name: Foo2
 nAmE: Foo3
 ";
@@ -715,8 +705,7 @@ nAmE: Foo3
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_valid_field_name_examples() {
-        const TEXT: &str = "
-Foo:
+        const TEXT: &str = "Foo:
 foo:
 A23:
 ab1:
@@ -789,8 +778,7 @@ A_Field:
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_value_of_a_field1() {
-        const TEXT: &str = "
-Name: Mr. Customer";    // NOTE: no newline at end of field's value on purpose
+        const TEXT: &str = "Name: Mr. Customer";    // NOTE: no newline at end of field's value on purpose
         match DB::new(TEXT) {
             Ok(_) => {
                 // not good, should not return Ok
@@ -808,8 +796,7 @@ Name: Mr. Customer";    // NOTE: no newline at end of field's value on purpose
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_value_of_a_field2() {
-        const TEXT: &str = "
-Name: Mr. Customer
+        const TEXT: &str = "Name: Mr. Customer
 ";
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
@@ -838,8 +825,7 @@ Name: Mr. Customer
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_value_of_a_field3() {
-        const TEXT: &str = "
-Name: Mr. Customer says \"So much wow!\", yet it seems fun, ain't it? Smells like Mötör's Head 😂
+        const TEXT: &str = "Name: Mr. Customer says \"So much wow!\", yet it seems fun, ain't it? Smells like Mötör's Head 😂
 ";
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
@@ -868,8 +854,7 @@ Name: Mr. Customer says \"So much wow!\", yet it seems fun, ain't it? Smells lik
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_escaping_a_newline1() {
-        const TEXT: &str = "
-Foo: bar1
+        const TEXT: &str = "Foo: bar1
 + bar2
 +  bar3
 ";
@@ -900,8 +885,7 @@ Foo: bar1
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_escaping_a_newline2() {
-        const TEXT: &str = "
-Foo:
+        const TEXT: &str = "Foo:
 + bar2
 +  bar3
 ";  // NOTE: no space after "Foo:" should not be accepted
@@ -921,8 +905,7 @@ Foo:
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_escaping_a_newline3() {
-        const TEXT: &str = "
-Foo: 
+        const TEXT: &str = "Foo: 
 + bar2
 +  bar3
 ";  // NOTE: difference to previous test is the space after "Foo:"
