@@ -888,15 +888,15 @@ A_Field:
         const TEXT: &str = "Foo:
 + bar2
 +  bar3
-";  // NOTE: no space after "Foo:" should not be accepted
+";  // NOTE: no space after "Foo:"
         match DB::new(TEXT) {
             Ok(_) => {
-                // not good, should not return Ok
+                // that is OK, should return Ok
+                // NOTE: should be accepted as GNU recutils accepts this
                 assert!(false);
             },
             Err(_) => {
-                // that is OK, should return Err
-                //TODO how does recutils handle this? does it insist on space after "Foo:" or not? check its tests.
+                // not good, should not return Err
                 assert!(true);
             }
         }
