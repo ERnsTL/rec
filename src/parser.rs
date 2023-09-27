@@ -785,4 +785,83 @@ A_Field:
             _ => { assert!(false); }
         }
     }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_value_of_a_field1() {
+        const TEXT: &str = "
+Name: Mr. Customer";    // NOTE: no newline at end of field's value on purpose
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                // see manual 2.1 Fields - Value of a field: "value of a field as a sequence of characters terminated by a single newline character"
+                //TODO how does recutils handle this? does it insist on trailing newline on last line?
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_value_of_a_field2() {
+        const TEXT: &str = "
+Name: Mr. Customer
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 records
+        assert_eq!(db.records.len(), 1);
+        // 1 fields on that record
+        assert_eq!(db.records[0].len(), 1);
+
+        // contains field "Name"
+        assert_eq!(db.records[0].contains_key("Name"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(db.records[0].is_vec("Name"), false);
+        // Name is a Line type
+        match &db.records[0].get("Name").unwrap() {
+            Value::Line(thestr) => {
+                // value matches
+                assert_eq!(*thestr, "Mr. Customer".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_value_of_a_field3() {
+        const TEXT: &str = "
+Name: Mr. Customer says \"So much wow!\", yet it seems fun, ain't it? Smells like Mötör's Head 😂
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 records
+        assert_eq!(db.records.len(), 1);
+        // 1 fields on that record
+        assert_eq!(db.records[0].len(), 1);
+
+        // contains field "Name"
+        assert_eq!(db.records[0].contains_key("Name"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(db.records[0].is_vec("Name"), false);
+        // Name is a Line type
+        match &db.records[0].get("Name").unwrap() {
+            Value::Line(thestr) => {
+                // value matches
+                assert_eq!(*thestr, "Mr. Customer says \"So much wow!\", yet it seems fun, ain't it? Smells like Mötör's Head 😂".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }
 }
