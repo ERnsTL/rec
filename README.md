@@ -72,6 +72,7 @@ The following examples and definitions are covered by unit tests, listed by chap
 
 ## Future
 
+* TODO compatibility and compliance with v1.9 from 2022
 * TODO performance comparison GNU recutils with this implementation
 * TODO equivalent of ndbmkhash for recutils - format of this hashfile? how does it detect hashfile and database being out of sync?
 
