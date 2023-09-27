@@ -70,6 +70,11 @@ The following examples and definitions are covered by unit tests, listed by chap
 * 18 regular expressions:  TODO expand
 * 19 date input formats:  TODO expand
 
+## Future
+
+* TODO performance comparison GNU recutils with this implementation
+* TODO equivalent of ndbmkhash for recutils - format of this hashfile? how does it detect hashfile and database being out of sync?
+
 ## Remarks
 
 My hope is that some day this library will become part of bigger GUI program for managing your stuff with plain-text databases. Stale while im trying to figure out if writing complex GUI in Rust today is even possible.
