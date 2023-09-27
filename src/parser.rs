@@ -864,4 +864,89 @@ Name: Mr. Customer says \"So much wow!\", yet it seems fun, ain't it? Smells lik
             _ => { assert!(false); }
         }
     }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_escaping_a_newline1() {
+        const TEXT: &str = "
+Foo: bar1
++ bar2
++  bar3
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 records
+        assert_eq!(db.records.len(), 1);
+        // 1 fields on that record
+        assert_eq!(db.records[0].len(), 1);
+
+        // contains field "Foo"
+        assert_eq!(db.records[0].contains_key("Foo"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(db.records[0].is_vec("Foo"), false);
+        // Name is a Line type
+        match &db.records[0].get("Foo").unwrap() {
+            Value::Line(thestr) => {
+                // value matches
+                assert_eq!(*thestr, "bar1\nbar2\n bar3".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_escaping_a_newline2() {
+        const TEXT: &str = "
+Foo:
++ bar2
++  bar3
+";  // NOTE: no space after "Foo:" should not be accepted
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                //TODO how does recutils handle this? does it insist on space after "Foo:" or not? check its tests.
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 2.1 Fields
+    #[test]
+    fn parser_2_1_escaping_a_newline3() {
+        const TEXT: &str = "
+Foo: 
++ bar2
++  bar3
+";  // NOTE: difference to previous test is the space after "Foo:"
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 records
+        assert_eq!(db.records.len(), 1);
+        // 1 fields on that record
+        assert_eq!(db.records[0].len(), 1);
+
+        // contains field "Foo"
+        assert_eq!(db.records[0].contains_key("Foo"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(db.records[0].is_vec("Foo"), false);
+        // Name is a Line type
+        match &db.records[0].get("Foo").unwrap() {
+            Value::Line(thestr) => {
+                // value matches
+                assert_eq!(*thestr, "\nbar2\n bar3".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }
 }
