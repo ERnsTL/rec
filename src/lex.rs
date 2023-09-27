@@ -48,8 +48,11 @@ fn read_line<'a, I: Iterator<Item = &'a String>>(
     let line = it.next().unwrap();
 
     match line.split_once(":") {
+        // error case
         None => Err("expected a colon"),
-        Some((key, value)) if value.trim().is_empty() => {
+
+        // multi-line value with empty value on first line
+        Some((key, value)) if value.trim_start().is_empty() => {
             let mut text = String::from(value);
 
             while let Some(&line) = it.peek() {
@@ -65,7 +68,30 @@ fn read_line<'a, I: Iterator<Item = &'a String>>(
             text.pop(); // Remove final newline
 
             Ok((key.to_string(), text))
+        },
+
+        // multi-line value with value on first line
+        //TODO optimize the if condition and merge with above block?
+        Some((key, value)) if it.peek().and_then(|line| if line.starts_with("+ ") { Some(()) } else { None } ).is_some() => {
+            let mut text = String::from(value.trim_start());
+            text.push('\n');
+
+            while let Some(&line) = it.peek() {
+                if !line.starts_with("+ ") {
+                    break;
+                }
+
+                text.push_str(line.strip_prefix("+ ").unwrap());
+                text.push('\n');
+                it.next();
+            }
+
+            text.pop(); // Remove final newline
+
+            Ok((key.to_string(), text))
         }
+
+        // normal single-line case
         Some((key, value)) => Ok((key.to_string(), value.trim().to_string())),
     }
 }
