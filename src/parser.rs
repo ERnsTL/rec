@@ -893,11 +893,11 @@ A_Field:
             Ok(_) => {
                 // that is OK, should return Ok
                 // NOTE: should be accepted as GNU recutils accepts this
-                assert!(false);
+                assert!(true);
             },
             Err(_) => {
                 // not good, should not return Err
-                assert!(true);
+                assert!(false);
             }
         }
     }
@@ -928,7 +928,7 @@ A_Field:
             Value::Line(thestr) => {
                 // value matches
                 // NOTE: GNU recutils also does not return the " " after "Foo:"
-                assert_eq!(*thestr, "\nbar2\n bar3".to_owned());
+                assert_eq!(*thestr, "bar2\n bar3".to_owned());
             }
             _ => { assert!(false); }
         }
@@ -937,7 +937,7 @@ A_Field:
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_escaping_a_newline4() {
-        const TEXT: &str = "Foo: 
+        const TEXT: &str = "Foo:  
 + bar2
 +  bar3
 ";  // NOTE: difference to previous test is two spaces after "Foo:" the last of which should be preserved
