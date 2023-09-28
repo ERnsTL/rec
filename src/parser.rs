@@ -783,7 +783,7 @@ A_Field:
             Ok(_) => {
                 // that is OK, should return Ok
                 // see manual 2.1 Fields - Value of a field: "value of a field as a sequence of characters terminated by a single newline character"
-                // but GNU recutils accepts it at the end of the file - TODO submit clarification to GNU recutils
+                // but GNU recutils accepts it at the end of the file, recfix does not complain, but recsel adds newline at end of file - TODO submit clarification to GNU recutils
                 assert!(true);
             },
             Err(_) => {
