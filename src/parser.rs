@@ -781,14 +781,14 @@ A_Field:
         const TEXT: &str = "Name: Mr. Customer";    // NOTE: no newline at end of field's value on purpose
         match DB::new(TEXT) {
             Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
+                // that is OK, should return Ok
+                // see manual 2.1 Fields - Value of a field: "value of a field as a sequence of characters terminated by a single newline character"
+                // but GNU recutils accepts it at the end of the file - TODO submit clarification to GNU recutils
+                assert!(true);
             },
             Err(_) => {
-                // that is OK, should return Err
-                // see manual 2.1 Fields - Value of a field: "value of a field as a sequence of characters terminated by a single newline character"
-                //TODO how does recutils handle this? does it insist on trailing newline on last line?
-                assert!(true);
+                // not good, should not return Err
+                assert!(false);
             }
         }
     }
