@@ -42,6 +42,15 @@ pub(crate) fn lex(s: &str) -> Result<Vec<Token>, &'static str> {
     Ok(tokens)
 }
 
+/// returns not Some or None, but simply if the prefi is found, removed and if not found, the original string
+fn trim_start_space(line: &str) -> &str {
+  if !line.starts_with(" ") {
+    return line;
+  }
+  // trim one space
+  return &line[1..];
+}
+
 fn read_line<'a, I: Iterator<Item = &'a String>>(
     it: &mut Peekable<I>,
 ) -> Result<(String, String), &'static str> {
@@ -52,8 +61,11 @@ fn read_line<'a, I: Iterator<Item = &'a String>>(
         None => Err("expected a colon"),
 
         // multi-line value with empty value on first line
-        Some((key, value)) if value.trim_start().is_empty() => {
-            let mut text = String::from(value);
+        Some((key, value)) if trim_start_space(value).is_empty() => {
+            let mut text = String::new();
+            if value.len() > 1 {
+                text.push('\n');
+            }
 
             while let Some(&line) = it.peek() {
                 if !line.starts_with("+ ") {
@@ -71,10 +83,12 @@ fn read_line<'a, I: Iterator<Item = &'a String>>(
         },
 
         // multi-line value with value on first line
-        //TODO optimize the if condition and merge with above block?
+        //TODO optimize the if condition and merge with above block? also the if len conditions are clunky - space after colon should be removed on split_once-level already
         Some((key, value)) if it.peek().and_then(|line| if line.starts_with("+ ") { Some(()) } else { None } ).is_some() => {
-            let mut text = String::from(value.trim_start());
-            text.push('\n');
+            let mut text = String::from(trim_start_space(value));
+            if text.len() > 0 {
+                text.push('\n');
+            }
 
             while let Some(&line) = it.peek() {
                 if !line.starts_with("+ ") {
