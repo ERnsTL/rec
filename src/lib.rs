@@ -1,6 +1,5 @@
 #![feature(test)]
 #![feature(box_syntax)]
-#![feature(once_cell)]
 #![allow(dead_code)]
 
 mod crypt;
