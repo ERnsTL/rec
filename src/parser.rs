@@ -965,4 +965,52 @@ A_Field:
             _ => { assert!(false); }
         }
     }
+
+    /// see manual 2.2 Records
+    #[test]
+    fn parser_2_2_record_example() {
+        const TEXT: &str = "Name1: Value1
+Name2: Value2
+Name2: Value3
+";
+        let db = DB::new(TEXT).unwrap();
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 records
+        assert_eq!(db.records.len(), 1);
+        // 2 unique fields on that record
+        assert_eq!(db.records[0].len(), 2);
+
+        // contains given fields
+        assert_eq!(db.records[0].contains_key("Name1"), true);
+        assert_eq!(db.records[0].contains_key("Name2"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(db.records[0].is_vec("Name1"), false);
+        assert_eq!(db.records[0].is_vec("Name2"), true);
+        // Name1 is a Line type
+        match &db.records[0].get("Name1").unwrap() {
+            Value::Line(thestr) => {
+                // Name matches
+                assert_eq!(*thestr, "Value1".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // Name2 is a Line type
+        let name2 = db.records[0].get_vec("Name2").unwrap();
+        match &name2[0] {
+            Value::Line(thestr) => {
+                // Name matches
+                assert_eq!(*thestr, "Value2".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        match &name2[1] {
+            Value::Line(thestr) => {
+                // Name matches
+                assert_eq!(*thestr, "Value3".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }
 }
