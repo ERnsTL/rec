@@ -255,7 +255,7 @@ fn parse_bound(v: &str) -> Result<isize, Err> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{Meta, Constraint};
+    use crate::{Meta, Constraint, FlatSize};
 
     #[test]
     fn parser_rec_type() {
