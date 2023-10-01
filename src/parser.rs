@@ -968,7 +968,7 @@ A_Field:
 
     /// see manual 2.2 Records
     #[test]
-    fn parser_2_2_record_example() {
+    fn parser_2_2_record_example_and_multi_fields() {
         const TEXT: &str = "Name1: Value1
 Name2: Value2
 Name2: Value3
