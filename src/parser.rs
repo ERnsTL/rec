@@ -1032,4 +1032,34 @@ Email: john@smith.name
         // size of the record is 3
         assert_eq!(db.records[0].size(), 3);
     }
+
+    /// see manual 2.2 Records
+    #[test]
+    fn parser_2_2_record_separation() {
+        const TEXT: &str = "Name: Ada Lovelace
+Age: 36
+
+Name: Peter the Great
+Age: 53
+
+Name: Matusalem
+Age: 969
+";
+        let db = DB::new(TEXT).unwrap();
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // number of records
+        assert_eq!(db.records.len(), 3);
+        // total number of fields
+        assert_eq!(db.fields.len(), 2);
+        // number of unique fields on records
+        assert_eq!(db.records[0].len(), 2);
+        assert_eq!(db.records[1].len(), 2);
+        assert_eq!(db.records[2].len(), 2);
+        // size of each record
+        assert_eq!(db.records[0].size(), 2);
+        assert_eq!(db.records[1].size(), 2);
+        assert_eq!(db.records[2].size(), 2);
+    }
 }
