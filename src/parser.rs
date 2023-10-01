@@ -1013,4 +1013,23 @@ Name2: Value3
             _ => { assert!(false); }
         }
     }
+
+    /// see manual 2.2 Records
+    #[test]
+    fn parser_2_2_size_of_a_record() {
+        const TEXT: &str = "Name: John Smith
+Email: john.smith@foomail.com
+Email: john@smith.name
+";
+        let db = DB::new(TEXT).unwrap();
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 records
+        assert_eq!(db.records.len(), 1);
+        // 2 unique fields on that record
+        assert_eq!(db.records[0].len(), 2);
+        // size of the record is 3
+        assert_eq!(db.records[0].size(), 3);
+    }
 }
