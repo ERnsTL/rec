@@ -28,6 +28,17 @@ use uuid::Uuid;
 pub type Key = String;
 pub type Record = MultiMap<Key, Value>;
 
+trait FlatSize {
+    fn size(self: &Self) -> usize;
+}
+
+impl FlatSize for Record {
+    /// Returns the "size of a record" defined in manual, 2.2 Records
+    fn size(self: &Record) -> usize {
+        return self.flat_iter().count();
+    }
+}
+
 #[derive(Debug, Default)]
 pub struct Meta {
     unique: bool,
