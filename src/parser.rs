@@ -1174,4 +1174,52 @@ Age: 53
             _ => { assert!(false); }
         }
     }
+
+    /// see manual 2.4.1 Record Sets
+    #[test]
+    fn parser_2_4_1_recordset_type_example() {
+        const TEXT: &str = "%rec: Entry
+
+Id: 1
+Name: Entry 1
+
+Id: 2
+Name: Entry 2
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // typed recordset
+        assert!(db.rectype.is_some());
+        // type of recordset is Entry
+        assert_eq!(db.rectype.unwrap(), "Entry".to_owned());
+        // 2 records
+        assert_eq!(db.records.len(), 2);
+        // 2 fields on that record
+        assert_eq!(db.records[0].len(), 2);
+        assert_eq!(db.records[1].len(), 2);
+
+        // contains fields
+        assert_eq!(db.records[0].contains_key("Id"), true);
+        assert_eq!(db.records[0].contains_key("Name"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(db.records[0].is_vec("Id"), false);
+        assert_eq!(db.records[0].is_vec("Name"), false);
+        // Id is a Line type
+        match &db.records[0].get("Id").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "1".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // Name is a Line type
+        match &db.records[0].get("Name").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "Entry 1".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }
 }
