@@ -1104,5 +1104,44 @@ Occupation: Unoccupied
             }
             _ => { assert!(false); }
         }
-    }    
+    }
+
+    /// see manual 2.3 Comments
+    #[test]
+    fn parser_2_3_comments_example_for_headers_and_footers() {
+        const TEXT: &str = "# -*- mode: rec -*-
+#
+# TODO
+#
+# This file contains the Bugs database of GNU recutils.
+#
+# Blah blah…
+
+Name: Road Runner
+
+# End of TODO
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 records
+        assert_eq!(db.records.len(), 1);
+        // 1 fields on that record
+        assert_eq!(db.records[0].len(), 1);
+
+        // contains field "Foo"
+        assert_eq!(db.records[0].contains_key("Name"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(db.records[0].is_vec("Name"), false);
+        // Name is a Line type
+        match &db.records[0].get("Name").unwrap() {
+            Value::Line(thestr) => {
+                // value matches
+                assert_eq!(*thestr, "Road Runner".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }
 }
