@@ -1144,4 +1144,34 @@ Name: Road Runner
             _ => { assert!(false); }
         }
     }
+
+    /// see manual 2.3 Comments
+    #[test]
+    fn parser_2_3_comments_must_be_complete_lines() {
+        const TEXT: &str = "Name: Peter the Great # Russian Tsar
+Age: 53
+";
+        // should return Ok - but the value of Name field must include the false comment
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 records
+        assert_eq!(db.records.len(), 1);
+        // 1 fields on that record
+        assert_eq!(db.records[0].len(), 2);
+
+        // contains field "Name"
+        assert_eq!(db.records[0].contains_key("Name"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(db.records[0].is_vec("Name"), false);
+        // Name is a Line type
+        match &db.records[0].get("Name").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "Peter the Great # Russian Tsar".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }
 }
