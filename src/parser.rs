@@ -1070,7 +1070,7 @@ Age: 969
 # Occupation: Software Engineer
 # Severe lack of brain capacity
 # Fired on 02/01/2009 (without compensation)
-Occupation: Unoccupied        
+Occupation: Unoccupied
 ";
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
