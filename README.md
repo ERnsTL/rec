@@ -20,7 +20,7 @@ The following examples and definitions are covered by unit tests, listed by chap
 * 2 The Rec Format:  Nothing to comply with.
   * 2.1 Fields:  Field example, Field name regular expression, Field name case-sensitive, Valid field name examples, Value of a field, Escaping a newline (multi-line values).
   * 2.2 Records:  Record example, Several fields in a record share the same name and/or field value (multi-fields), Size of a record, Record separation.
-  * 2.3 Comments:  Comment lines example, TODO Comments example for headers and footers, TODO Comments must be complete lines. TODO should comments also be saved again in the right place - how does GNU recutils handle this?
+  * 2.3 Comments:  Comment lines example, Comments example for headers and footers, TODO Comments must be complete lines. TODO should comments also be saved again in the right place - how does GNU recutils handle this?
   * 2.4 Record Descriptors:  Nothing to comply with.
     * 2.4.1 Record Sets:  TODO Recordset type example, TODO Two record descriptors in the same database, TODO empty recordset example, TODO Default record type (untyped) mixed with typed record types.
     * 2.4.2 Naming Record Types:  TODO Allowed characters in record types.
