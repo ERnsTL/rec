@@ -1062,4 +1062,47 @@ Age: 969
         assert_eq!(db.records[1].size(), 2);
         assert_eq!(db.records[2].size(), 2);
     }
+
+    /// see manual 2.3 Comments
+    #[test]
+    fn parser_2_3_comment_lines_example() {
+        const TEXT: &str = "Name: Jose E. Marchesi
+# Occupation: Software Engineer
+# Severe lack of brain capacity
+# Fired on 02/01/2009 (without compensation)
+Occupation: Unoccupied        
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // untyped recordset
+        assert!(db.rectype.is_none());
+        // 1 records
+        assert_eq!(db.records.len(), 1);
+        // 1 fields on that record
+        assert_eq!(db.records[0].len(), 2);
+
+        // contains field "Foo"
+        assert_eq!(db.records[0].contains_key("Name"), true);
+        assert_eq!(db.records[0].contains_key("Occupation"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(db.records[0].is_vec("Name"), false);
+        assert_eq!(db.records[0].is_vec("Occupation"), false);
+        // Name is a Line type
+        match &db.records[0].get("Name").unwrap() {
+            Value::Line(thestr) => {
+                // value matches
+                assert_eq!(*thestr, "Jose E. Marchesi".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // Occupation is a Line type
+        match &db.records[0].get("Occupation").unwrap() {
+            Value::Line(thestr) => {
+                // value matches
+                assert_eq!(*thestr, "Unoccupied".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }    
 }
