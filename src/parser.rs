@@ -16,6 +16,7 @@ pub(crate) struct Parser {
     db: DB,
     current_record: Option<Record>,
     current_recordset: usize,   // index of recordset vector that we are currently filling into
+    have_something: bool,
 }
 
 impl Parser {
@@ -24,26 +25,22 @@ impl Parser {
     }
 
     pub(crate) fn parse(mut self, tokens: Vec<Token>) -> Result<DB, Err> {
-        // TODO optimize: push first recordset - will be empty
-        // this is a negative side-effect and it has to be removed if the recfile turns out to be empty
-        // positive: dont have to recognize "beginning of untyped recordset" and dont have to check before parse_field() each time for the need to create a new empty recordset
-        self.db.recordsets.push(RecordSet::default());
-        let mut have_something: bool = false;
+        self.have_something = false;
 
         for token in tokens.iter() {
             match token {   //TODO recognize beginning of untyped recordset
                 Token::Keyword(keyword, value) => {
-                    have_something = true;
                     let args = value.split_whitespace().collect();
                     self.parse_keyword(keyword, args)?;
+                    self.have_something = true;
                 },
                 Token::Field(key, value) => {
-                    have_something = true;
                     self.parse_field(key, value)?;
+                    self.have_something = true;
                 }
                 Token::Blank => {
                     if let Some(rec) = self.current_record.take() {
-                        have_something = true;
+                        self.have_something = true;
                         self.db.recordsets[self.current_recordset].records.push(rec);   //TODO optimize push into this long chain of indirections or have a local empty records = Vec::new() ? or keep a reference to db.recordsets[self.current_recordset].records ?
                     }
                 }
@@ -51,22 +48,25 @@ impl Parser {
         }
 
         if let Some(rec) = self.current_record.take() {
+            self.have_something = true;
             self.db.recordsets[self.current_recordset].records.push(rec);   //TODO optimize same as above - indirections or indirect first and insert into a resolved records variable?
-        }
-
-        if !have_something {
-            // remove initially-pushed recordset
-            self.db.recordsets.remove(0);
         }
 
         Ok(self.db)
     }
 
     fn parse_keyword(&mut self, key: &str, args: Vec<&str>) -> Result<(), Err> {
+        // first recordset can be triggered by any keyword
+        if !self.have_something {
+            // add first recordset, any keyword can trigger this
+            self.db.recordsets.push(RecordSet::default());
+            // current_recordset is already 0
+        }
+
         match key {
             "rec" => {
-                // there is already one recordset initially - for this first one, use index 0, for next one increment and push a new recordset
-                if !(self.db.recordsets.len() == 1 && self.db.recordsets[0].records.len() == 0) {
+                if self.have_something {
+                    // add additional recordset
                     self.db.recordsets.push(RecordSet::default());
                     self.current_recordset += 1;
                 }
@@ -121,6 +121,12 @@ impl Parser {
         // check for field name regular expression, see manual 2.1 Fields - field name regular expression
         if !FIELD_RX.is_match(key) {
             return Err("non-conforming field name".into());
+        }
+
+        if !self.have_something {
+            // add first recordset
+            self.db.recordsets.push(RecordSet::default());
+            // current_recordset is already 0
         }
 
         if !self.db.recordsets[self.current_recordset].fields.contains(&key.to_owned()) {
