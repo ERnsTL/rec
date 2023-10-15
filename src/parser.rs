@@ -7,8 +7,9 @@ use lazy_static::lazy_static;
 use regex::Regex;
 
 lazy_static! {
-    static ref FIELD_RX: Regex = Regex::new("^[a-zA-Z%][a-zA-Z0-9_]*$").unwrap();   //TODO performance or accuracy with ^ and $ compared to without?
-    static ref ENUM_RX: Regex = Regex::new("^[a-zA-Z0-9][a-zA-Z0-9_-]*$").unwrap();
+    static ref FIELD_RX: Regex = Regex::new("^[a-zA-Z%][a-zA-Z0-9_]*$").unwrap();   //TODO does it really allow a percent sign? //TODO performance or accuracy with ^ and $ compared to without?
+    static ref RECTYPE_RX: Regex = Regex::new("^[a-zA-Z][a-zA-Z0-9_]*$").unwrap();   //TODO performance or accuracy with ^ and $ compared to without?
+    static ref ENUM_RX: Regex = Regex::new("^[a-zA-Z0-9][a-zA-Z0-9_]*$").unwrap();
 }
 
 #[derive(Debug, Default)]
@@ -70,7 +71,11 @@ impl Parser {
                     self.db.recordsets.push(RecordSet::default());
                     self.current_recordset += 1;
                 }
-                self.db.recordsets[self.current_recordset].rectype = Some(args.get(0).ok_or("expected rec type")?.to_string())
+                let rectype = args.get(0).ok_or("expected rec type")?;  //TODO optimize possible allocation - compare performance with assign, then check the .rectype value since most DBs are expected to be compliant
+                match RECTYPE_RX.is_match(rectype) {
+                    true => self.db.recordsets[self.current_recordset].rectype = Some(rectype.to_string()),
+                    false => return Err(format!("invalid rec type name value: {}", rectype).into()),
+                }
             },
             "key" => self.db.recordsets[self.current_recordset].primary_key = Some(args.get(0).ok_or("expected key")?.to_string()),
             "doc" => self.db.recordsets[self.current_recordset].doc = Some(args.join(" ")),
