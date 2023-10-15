@@ -6,7 +6,11 @@ Supports parsing databases, sex'es, fields encryption and some basic queries. Al
 
 ## Status
 
-Very WIP.
+Basically useful. Not recommended for production use at the moment.
+
+Tests for all examples mentioned in the manual are being added. During that, compatibility problems are revealed and fixed but a good part of the features are usable and compliant with GNU recutils.
+
+API may change at any time at this stage.
 
 ## Compatibility
 
