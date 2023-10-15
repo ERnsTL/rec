@@ -23,7 +23,7 @@ The following examples and definitions are covered by unit tests, listed by chap
   * 2.3 Comments:  Comment lines example, Comments example for headers and footers, Comments must be complete lines. TODO should comments also be saved again in the right place - how does GNU recutils handle this?
   * 2.4 Record Descriptors:  Nothing to comply with.
     * 2.4.1 Record Sets:  Recordset type example, Two record descriptors in the same database, Empty recordset example, Default record type (untyped) mixed with typed record types.
-    * 2.4.2 Naming Record Types:  TODO Allowed characters in record types.
+    * 2.4.2 Naming Record Types:  Allowed characters in record types.
     * 2.4.3 Documenting Records:  TODO Set documentation, TODO Set documentation character restrictions, TODO Two record sets with rec and doc fields example.
     * 2.4.4 Record Sets Properties:  TODO Special fields example for mandatory, TODO Special fields start with "%", TODO Non-special fields in a record descriptor, TODO Every recordset must contain exactly one field rec, TODO It is not mandated that the rec field must occupy the first position, TODO Test for each special field:  TODO %rec, TODO %mandatory, TODO %allowed, TODO %prohibit, TODO %unique, TODO %key, TODO %doc, TODO %typedef and TODO %type, TODO %auto, TODO %sort, TODO %size, TODO %constraint, TODO %confidential, TODO unknown special fields (warning?).
 * 3 querying recfiles section TODO expand
