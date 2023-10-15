@@ -6,7 +6,7 @@ Supports parsing databases, sex'es, fields encryption and some basic queries. Al
 
 ## Status
 
-Basically useful. Not recommended for production use at the moment.
+Basically useful. Not recommended for production use at the moment. This is currently the library only. The command-line utilities are still missing.
 
 Tests for all examples mentioned in the manual are being added. During that, compatibility problems are revealed and fixed but a good part of the features are usable and compliant with GNU recutils.
 
