@@ -1473,4 +1473,43 @@ Date: 21 April 2011
         // number of records
         //assert_eq!(db.recordsets[0].records.len(), 0);
     }
+
+    /// see manual 2.4.1 Record Sets
+    #[test]
+    fn parser_2_4_1_empty_recordset_example() {
+        const TEXT: &str = "%rec: Article
+
+%rec: Stock
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // number of recordsets
+        assert_eq!(db.recordsets.len(), 2);
+        // prepare recordsets
+        let rs0 = &db.recordsets[0];
+        let rs1 = &db.recordsets[1];
+
+        // check recordset[0]
+
+        // typed recordset
+        assert!(rs0.rectype.is_some());
+        // type of recordset is Entry
+        assert_eq!(rs0.rectype.as_deref().unwrap(), "Article");
+        // 0 records
+        assert_eq!(rs0.records.len(), 2);
+        // 0 fields
+        assert_eq!(rs0.fields.len(), 0);
+
+        // check recordset[1]
+
+        // typed recordset
+        assert!(rs1.rectype.is_some());
+        // type of recordset is Entry
+        assert_eq!(rs1.rectype.as_deref().unwrap(), "Stock");
+        // 0 records
+        assert_eq!(rs1.records.len(), 2);
+        // 0 fields
+        assert_eq!(rs1.fields.len(), 0);
+    }
 }
