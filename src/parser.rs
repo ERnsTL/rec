@@ -1663,4 +1663,83 @@ Concept: 12
             _ => { assert!(false); }
         }
     }
+
+    /// see manual 2.4.2 Naming Record Types
+    #[test]
+    fn parser_2_4_2_allowed_characters_in_record_types1() {
+        const TEXT: &str = "%rec: le666_Baronesse123
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // number of recordsets
+        assert_eq!(db.recordsets.len(), 1);
+        // prepare recordsets
+        let rs0 = &db.recordsets[0];
+
+        // check recordset[0]
+
+        // typed recordset
+        assert!(rs0.rectype.is_some());
+        // type of recordset
+        assert_eq!(rs0.rectype.as_deref().unwrap(), "le666_Baronesse123");
+        // number of records
+        assert_eq!(rs0.records.len(), 0);
+        // number of fields
+        assert_eq!(rs0.fields.len(), 0);
+    }
+
+    /// see manual 2.4.2 Naming Record Types
+    #[test]
+    fn parser_2_4_2_allowed_characters_in_record_types2() {
+        const TEXT: &str = "%rec: _1badname
+";
+        // should return Err
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 2.4.2 Naming Record Types
+    #[test]
+    fn parser_2_4_2_allowed_characters_in_record_types3() {
+        const TEXT: &str = "%rec: 2badname
+";
+        // should return Err
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 2.4.2 Naming Record Types
+    #[test]
+    fn parser_2_4_2_allowed_characters_in_record_types4() {
+        const TEXT: &str = "%rec: abad-name
+";
+        // should return Err
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
 }
