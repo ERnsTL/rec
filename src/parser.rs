@@ -1271,7 +1271,7 @@ Date: 21 April 2011
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
 
         // number of recordsets
-        //assert_eq!(db.recordsets.len(), 2);
+        assert_eq!(db.recordsets.len(), 2);
         // prepare recordsets
         let rs0 = &db.recordsets[0];
         let rs1 = &db.recordsets[1];
