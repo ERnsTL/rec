@@ -15,6 +15,7 @@ lazy_static! {
 pub(crate) struct Parser {
     db: DB,
     current_record: Option<Record>,
+    current_recordset: usize,   //### which one we are currently filling into
 }
 
 impl Parser {
@@ -26,7 +27,7 @@ impl Parser {
         let mut records = Vec::new();
 
         for token in tokens.iter() {
-            match token {
+            match token {   //### recognize beginning of untyped recordset
                 Token::Keyword(keyword, value) => {
                     let args = value.split_whitespace().collect();
                     self.parse_keyword(keyword, args)?
@@ -50,7 +51,7 @@ impl Parser {
     }
 
     fn parse_keyword(&mut self, key: &str, args: Vec<&str>) -> Result<(), Err> {
-        match key {
+        match key {//### add recognition of new recordset
             "rec" => self.db.rectype = Some(args.get(0).ok_or("expected rec type")?.to_string()),
             "key" => self.db.primary_key = Some(args.get(0).ok_or("expected key")?.to_string()),
             "doc" => self.db.doc = Some(args.join(" ")),

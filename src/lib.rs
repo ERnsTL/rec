@@ -126,7 +126,7 @@ impl Display for Value {
 }
 
 #[derive(Default, Debug)]
-pub struct DB {
+pub struct DB {//### move all into struct RecordSet
     pub rectype: Option<String>,
     pub primary_key: Option<String>,
     pub sort_field: Option<String>,
