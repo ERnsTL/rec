@@ -52,11 +52,11 @@ impl Parser {
     fn parse_keyword(&mut self, key: &str, args: Vec<&str>) -> Result<(), Err> {
         match key {
             "rec" => {
-                // if more than first recordset, use index 0, for next one increment
-                if self.db.recordsets.len() > 1 {
+                // there is already one recordset initially - for this first one, use index 0, for next one increment and push a new recordset
+                if !(self.db.recordsets.len() == 1 && self.db.recordsets[0].records.len() == 0) {
+                    self.db.recordsets.push(RecordSet::default());
                     self.current_recordset += 1;
                 }
-                self.db.recordsets.push(RecordSet::default());
                 self.db.recordsets[self.current_recordset].rectype = Some(args.get(0).ok_or("expected rec type")?.to_string())
             },
             "key" => self.db.recordsets[self.current_recordset].primary_key = Some(args.get(0).ok_or("expected key")?.to_string()),
