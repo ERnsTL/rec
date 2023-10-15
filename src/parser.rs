@@ -1289,6 +1289,8 @@ Date: 21 April 2011
         let rs0 = &db.recordsets[0];
         let rs1 = &db.recordsets[1];
 
+        // check recordset[0]
+
         // typed recordset
         assert!(rs0.rectype.is_some());
         // type of recordset is Entry
@@ -1298,8 +1300,6 @@ Date: 21 April 2011
         // 2 fields on that record
         assert_eq!(rs0.records[0].len(), 2);
         assert_eq!(rs0.records[1].len(), 2);
-
-        // check recordset[0]
 
         // check record[0]
         // contains fields
@@ -1350,6 +1350,7 @@ Date: 21 April 2011
         }
 
         // check recordset[1]
+
         // typed recordset
         assert!(rs1.rectype.is_some());
         // type of recordset is Entry
