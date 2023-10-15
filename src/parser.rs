@@ -1269,42 +1269,150 @@ Date: 21 April 2011
 ";
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
-        let rs = &db.recordsets[0];
+
+        // number of recordsets
+        //assert_eq!(db.recordsets.len(), 2);
+        // prepare recordsets
+        let rs0 = &db.recordsets[0];
+        let rs1 = &db.recordsets[1];
 
         // typed recordset
-        assert!(rs.rectype.is_some());
+        assert!(rs0.rectype.is_some());
         // type of recordset is Entry
-        assert_eq!(rs.rectype.as_deref().unwrap(), "Article");
-        //TODO finish remaining test
-        /*
+        assert_eq!(rs0.rectype.as_deref().unwrap(), "Article");
         // 2 records
-        assert_eq!(db.records.len(), 2);
+        assert_eq!(rs0.records.len(), 2);
         // 2 fields on that record
-        assert_eq!(db.records[0].len(), 2);
-        assert_eq!(db.records[1].len(), 2);
+        assert_eq!(rs0.records[0].len(), 2);
+        assert_eq!(rs0.records[1].len(), 2);
 
+        // check recordset[0]
+
+        // check record[0]
         // contains fields
-        assert_eq!(db.records[0].contains_key("Id"), true);
-        assert_eq!(db.records[0].contains_key("Name"), true);
+        assert_eq!(rs0.records[0].contains_key("Id"), true);
+        assert_eq!(rs0.records[0].contains_key("Title"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Id"), false);
-        assert_eq!(db.records[0].is_vec("Name"), false);
+        assert_eq!(rs0.records[0].is_vec("Id"), false);
+        assert_eq!(rs0.records[0].is_vec("Title"), false);
         // Id is a Line type
-        match &db.records[0].get("Id").unwrap() {
+        match &rs0.records[0].get("Id").unwrap() {
             Value::Line(thestr) => {
                 // value matches - this is not a comment
                 assert_eq!(*thestr, "1".to_owned());
             }
             _ => { assert!(false); }
         }
-        // Name is a Line type
-        match &db.records[0].get("Name").unwrap() {
+        // Title is a Line type
+        match &rs0.records[0].get("Title").unwrap() {
             Value::Line(thestr) => {
                 // value matches - this is not a comment
-                assert_eq!(*thestr, "Entry 1".to_owned());
+                assert_eq!(*thestr, "Article 1".to_owned());
             }
             _ => { assert!(false); }
         }
-        */
+
+        // check record[1]
+        // contains fields
+        assert_eq!(rs0.records[1].contains_key("Id"), true);
+        assert_eq!(rs0.records[1].contains_key("Title"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(rs0.records[1].is_vec("Id"), false);
+        assert_eq!(rs0.records[1].is_vec("Title"), false);
+        // Id is a Line type
+        match &rs0.records[1].get("Id").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "2".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // Title is a Line type
+        match &rs0.records[1].get("Title").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "Article 2".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+
+        // check recordset[1]
+        // typed recordset
+        assert!(rs1.rectype.is_some());
+        // type of recordset is Entry
+        assert_eq!(rs1.rectype.as_deref().unwrap(), "Stock");
+        // 2 records
+        assert_eq!(rs1.records.len(), 2);
+        // 2 fields on that record
+        assert_eq!(rs1.records[0].len(), 3);
+        assert_eq!(rs1.records[1].len(), 3);
+
+        // check records[0]
+        // contains fields
+        assert_eq!(rs1.records[0].contains_key("Id"), true);
+        assert_eq!(rs1.records[0].contains_key("Type"), true);
+        assert_eq!(rs1.records[0].contains_key("Date"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(rs1.records[0].is_vec("Id"), false);
+        assert_eq!(rs1.records[0].is_vec("Type"), false);
+        assert_eq!(rs1.records[0].is_vec("Date"), false);
+        // Id is a Line type
+        match &rs1.records[0].get("Id").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "1".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // Type is a Line type
+        match &rs1.records[0].get("Type").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "sell".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // Date is a Line type
+        match &rs1.records[0].get("Date").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "20 April 2011".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+
+        // check records[1]
+        // contains fields
+        assert_eq!(rs1.records[1].contains_key("Id"), true);
+        assert_eq!(rs1.records[1].contains_key("Type"), true);
+        assert_eq!(rs1.records[1].contains_key("Date"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(rs1.records[1].is_vec("Id"), false);
+        assert_eq!(rs1.records[1].is_vec("Type"), false);
+        assert_eq!(rs1.records[1].is_vec("Date"), false);
+        // Id is a Line type
+        match &rs1.records[1].get("Id").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "2".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // Type is a Line type
+        match &rs1.records[1].get("Type").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "stock".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // Date is a Line type
+        match &rs1.records[1].get("Date").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "21 April 2011".to_owned());
+            }
+            _ => { assert!(false); }
+        }
     }
 }
