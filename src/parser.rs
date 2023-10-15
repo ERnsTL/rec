@@ -1,5 +1,5 @@
 use super::{Err, Kind, Record, Value, DB};
-use crate::crypt;
+use crate::{crypt, RecordSet};
 use crate::lex::Token;
 use std::collections::HashSet;
 
@@ -24,7 +24,8 @@ impl Parser {
     }
 
     pub(crate) fn parse(mut self, tokens: Vec<Token>) -> Result<DB, Err> {
-        let mut records = Vec::new();
+        //###let mut records = Vec::new();
+        self.db.recordsets.push(RecordSet::default());
 
         for token in tokens.iter() {
             match token {   //### recognize beginning of untyped recordset
@@ -35,17 +36,17 @@ impl Parser {
                 Token::Field(key, value) => self.parse_field(key, value)?,
                 Token::Blank => {
                     if let Some(rec) = self.current_record.take() {
-                        records.push(rec);
+                        self.db.recordsets[self.current_recordset].records.push(rec);
                     }
                 }
             }
         }
 
         if let Some(rec) = self.current_record.take() {
-            records.push(rec);
+            self.db.recordsets[self.current_recordset].records.push(rec);
         }
 
-        self.db.recordsets[self.current_recordset].records = records;
+        //###self.db.recordsets[self.current_recordset].records = records;
 
         Ok(self.db)
     }
