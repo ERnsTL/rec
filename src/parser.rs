@@ -15,7 +15,7 @@ lazy_static! {
 pub(crate) struct Parser {
     db: DB,
     current_record: Option<Record>,
-    current_recordset: usize,   //### which one we are currently filling into
+    current_recordset: usize,   // index of recordset vector that we are currently filling into
 }
 
 impl Parser {
@@ -24,11 +24,11 @@ impl Parser {
     }
 
     pub(crate) fn parse(mut self, tokens: Vec<Token>) -> Result<DB, Err> {
-        //###let mut records = Vec::new();
+        // push first recordset - will be empty, bad side-effect but we dont have to recognize "beginning of default typed recordset"
         self.db.recordsets.push(RecordSet::default());
 
         for token in tokens.iter() {
-            match token {   //### recognize beginning of untyped recordset
+            match token {   //TODO recognize beginning of untyped recordset
                 Token::Keyword(keyword, value) => {
                     let args = value.split_whitespace().collect();
                     self.parse_keyword(keyword, args)?
@@ -36,24 +36,29 @@ impl Parser {
                 Token::Field(key, value) => self.parse_field(key, value)?,
                 Token::Blank => {
                     if let Some(rec) = self.current_record.take() {
-                        self.db.recordsets[self.current_recordset].records.push(rec);
+                        self.db.recordsets[self.current_recordset].records.push(rec);   //TODO optimize push into this long chain of indirections or have a local empty records = Vec::new() ? or keep a reference to db.recordsets[self.current_recordset].records ?
                     }
                 }
             }
         }
 
         if let Some(rec) = self.current_record.take() {
-            self.db.recordsets[self.current_recordset].records.push(rec);
+            self.db.recordsets[self.current_recordset].records.push(rec);   //TODO optimize same as above - indirections or indirect first and insert into a resolved records variable?
         }
-
-        //###self.db.recordsets[self.current_recordset].records = records;
 
         Ok(self.db)
     }
 
     fn parse_keyword(&mut self, key: &str, args: Vec<&str>) -> Result<(), Err> {
-        match key {//### add recognition of new recordset
-            "rec" => self.db.recordsets[self.current_recordset].rectype = Some(args.get(0).ok_or("expected rec type")?.to_string()),
+        match key {
+            "rec" => {
+                // if more than first recordset, use index 0, for next one increment
+                if self.db.recordsets.len() > 1 {
+                    self.current_recordset += 1;
+                }
+                self.db.recordsets.push(RecordSet::default());
+                self.db.recordsets[self.current_recordset].rectype = Some(args.get(0).ok_or("expected rec type")?.to_string())
+            },
             "key" => self.db.recordsets[self.current_recordset].primary_key = Some(args.get(0).ok_or("expected key")?.to_string()),
             "doc" => self.db.recordsets[self.current_recordset].doc = Some(args.join(" ")),
             "sort" => {
