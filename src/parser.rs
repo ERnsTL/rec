@@ -1415,4 +1415,48 @@ Date: 21 April 2011
             _ => { assert!(false); }
         }
     }
+
+    /// see manual 2.4.1 Record Sets
+    #[test]
+    fn parser_2_4_1_two_record_descriptors_in_the_same_database2() {
+        const TEXT: &str = "# comment 1
+# comment 2
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // number of recordsets
+        assert_eq!(db.recordsets.len(), 1);
+        // 0 records
+        assert_eq!(db.recordsets[0].records.len(), 0);
+    }
+
+    /// see manual 2.4.1 Record Sets
+    #[test]
+    fn parser_2_4_1_two_record_descriptors_in_the_same_database3() {
+        const TEXT: &str = "";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // number of recordsets
+        assert_eq!(db.recordsets.len(), 0);
+        // 0 records
+        assert_eq!(db.recordsets[0].records.len(), 0);
+    }
+
+    /// see manual 2.4.1 Record Sets
+    #[test]
+    fn parser_2_4_1_two_record_descriptors_in_the_same_database4() {
+        const TEXT: &str = "
+
+
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // number of recordsets
+        assert_eq!(db.recordsets.len(), 0);
+        // 0 records
+        assert_eq!(db.recordsets[0].records.len(), 0);
+    }
 }
