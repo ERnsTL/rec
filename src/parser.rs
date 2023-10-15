@@ -24,18 +24,26 @@ impl Parser {
     }
 
     pub(crate) fn parse(mut self, tokens: Vec<Token>) -> Result<DB, Err> {
-        // push first recordset - will be empty, bad side-effect but we dont have to recognize "beginning of default typed recordset"
+        // TODO optimize: push first recordset - will be empty
+        // this is a negative side-effect and it has to be removed if the recfile turns out to be empty
+        // positive: dont have to recognize "beginning of untyped recordset" and dont have to check before parse_field() each time for the need to create a new empty recordset
         self.db.recordsets.push(RecordSet::default());
+        let mut have_something: bool = false;
 
         for token in tokens.iter() {
             match token {   //TODO recognize beginning of untyped recordset
                 Token::Keyword(keyword, value) => {
+                    have_something = true;
                     let args = value.split_whitespace().collect();
-                    self.parse_keyword(keyword, args)?
+                    self.parse_keyword(keyword, args)?;
+                },
+                Token::Field(key, value) => {
+                    have_something = true;
+                    self.parse_field(key, value)?;
                 }
-                Token::Field(key, value) => self.parse_field(key, value)?,
                 Token::Blank => {
                     if let Some(rec) = self.current_record.take() {
+                        have_something = true;
                         self.db.recordsets[self.current_recordset].records.push(rec);   //TODO optimize push into this long chain of indirections or have a local empty records = Vec::new() ? or keep a reference to db.recordsets[self.current_recordset].records ?
                     }
                 }
@@ -44,6 +52,11 @@ impl Parser {
 
         if let Some(rec) = self.current_record.take() {
             self.db.recordsets[self.current_recordset].records.push(rec);   //TODO optimize same as above - indirections or indirect first and insert into a resolved records variable?
+        }
+
+        if !have_something {
+            // remove initially-pushed recordset
+            self.db.recordsets.remove(0);
         }
 
         Ok(self.db)
