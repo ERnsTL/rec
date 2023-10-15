@@ -126,7 +126,12 @@ impl Display for Value {
 }
 
 #[derive(Default, Debug)]
-pub struct DB {//### move all into struct RecordSet
+pub struct DB {
+    recordsets: Vec<RecordSet>,
+}
+
+#[derive(Default, Debug)]
+pub struct RecordSet {
     pub rectype: Option<String>,
     pub primary_key: Option<String>,
     pub sort_field: Option<String>,
@@ -153,7 +158,7 @@ impl DB {
 }
 
 pub struct QueryBuilder<'a> {
-    db: &'a DB,
+    rs: &'a RecordSet,
     sx: Option<Sx>,
     contains: Option<String>,
     sort: Option<String>,
@@ -161,9 +166,9 @@ pub struct QueryBuilder<'a> {
 }
 
 impl<'a> QueryBuilder<'a> {
-    pub fn new(db: &'a DB) -> Self {
+    pub fn new(rs: &'a RecordSet) -> Self {
         Self {
-            db,
+            rs,
             sx: None,
             contains: None,
             sort: None,
@@ -189,7 +194,7 @@ impl<'a> QueryBuilder<'a> {
     pub fn find(&self) -> Result<impl Iterator<Item = &'a Record>, Err> {
         let mut results = Vec::new();
 
-        for rec in &self.db.records {
+        for rec in &self.rs.records {
             if let Some(ref sx) = self.sx {
                 if !sx.eval(&rec)? {
                     continue;
@@ -205,7 +210,7 @@ impl<'a> QueryBuilder<'a> {
             results.push(rec)
         }
 
-        if let Some(ref field) = self.sort.clone().or(self.db.sort_field.clone()) {
+        if let Some(ref field) = self.sort.clone().or(self.rs.sort_field.clone()) {
             results.sort_by(|x, y| x[field].partial_cmp(&y[field]).unwrap());
         }
 
@@ -225,7 +230,7 @@ mod tests {
         let buf = include_str!("test.rec");
         let db = DB::new(buf).unwrap();
 
-        let result = QueryBuilder::new(&db)
+        let result = QueryBuilder::new(&db.recordsets[0])
             .where_sx("Login = 'foo'")?
             .contains("Hello")
             .sort_by("Name")
@@ -238,7 +243,7 @@ mod tests {
     #[test]
     fn parser_records() {
         let db = DB::new("hello: world\nblah: blah\n\nhello: mom\nblah: bruh").unwrap();
-        assert_eq!(db.records.len(), 2);
+        assert_eq!(db.recordsets[0].records.len(), 2);
     }
 
     #[bench]
@@ -252,7 +257,7 @@ mod tests {
         let buf = include_str!("test.rec");
         let db = DB::new(black_box(buf)).unwrap();
         b.iter(|| {
-            QueryBuilder::new(&db)
+            QueryBuilder::new(&db.recordsets[0])
                 .where_sx("Login = 'foo'")
                 .unwrap()
                 .sort_by("Name")

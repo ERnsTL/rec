@@ -45,31 +45,31 @@ impl Parser {
             records.push(rec);
         }
 
-        self.db.records = records;
+        self.db.recordsets[self.current_recordset].records = records;
 
         Ok(self.db)
     }
 
     fn parse_keyword(&mut self, key: &str, args: Vec<&str>) -> Result<(), Err> {
         match key {//### add recognition of new recordset
-            "rec" => self.db.rectype = Some(args.get(0).ok_or("expected rec type")?.to_string()),
-            "key" => self.db.primary_key = Some(args.get(0).ok_or("expected key")?.to_string()),
-            "doc" => self.db.doc = Some(args.join(" ")),
+            "rec" => self.db.recordsets[self.current_recordset].rectype = Some(args.get(0).ok_or("expected rec type")?.to_string()),
+            "key" => self.db.recordsets[self.current_recordset].primary_key = Some(args.get(0).ok_or("expected key")?.to_string()),
+            "doc" => self.db.recordsets[self.current_recordset].doc = Some(args.join(" ")),
             "sort" => {
                 let field = args.get(0).ok_or("expected sort field")?.to_string();
-                self.db.sort_field = Some(field)
+                self.db.recordsets[self.current_recordset].sort_field = Some(field)
             }
             "type" => {
                 let field_name = args.get(0).ok_or("expected field name")?.to_string();
                 let kind = parse_type(args)?;
 
-                let meta = self.db.types.entry(field_name).or_default();
+                let meta = self.db.recordsets[self.current_recordset].types.entry(field_name).or_default();
 
                 meta.kind = kind;
             }
             "confidential" => {
                 for field in args {
-                    let meta = self.db.types.entry(field.to_owned()).or_default();
+                    let meta = self.db.recordsets[self.current_recordset].types.entry(field.to_owned()).or_default();
                     if !matches!(meta.kind, Kind::Line) {
                         return Err("confidential fields are always lines".into());
                     }
@@ -78,13 +78,13 @@ impl Parser {
             }
             "mandatory" | "allowed" | "prohibited" => {
                 for field in args {
-                    let meta = self.db.types.entry(field.to_owned()).or_default();
+                    let meta = self.db.recordsets[self.current_recordset].types.entry(field.to_owned()).or_default();
                     meta.constraint = Some(key.parse()?);
                 }
             }
             "unique" => {
                 for field in args {
-                    let meta = self.db.types.entry(field.to_owned()).or_default();
+                    let meta = self.db.recordsets[self.current_recordset].types.entry(field.to_owned()).or_default();
                     meta.unique = true
                 }
             }
@@ -104,11 +104,11 @@ impl Parser {
             return Err("non-conforming field name".into());
         }
 
-        if !self.db.fields.contains(&key.to_owned()) {
-            self.db.fields.insert(rec.len(), key.to_owned());
+        if !self.db.recordsets[self.current_recordset].fields.contains(&key.to_owned()) {
+            self.db.recordsets[self.current_recordset].fields.insert(rec.len(), key.to_owned());
         }
 
-        let meta = self.db.types.entry(key.to_owned()).or_default();
+        let meta = self.db.recordsets[self.current_recordset].types.entry(key.to_owned()).or_default();
         let val = parse_value(&meta.kind, value)?;
 
         rec.insert(key.to_owned(), val);
@@ -261,20 +261,20 @@ mod tests {
     #[test]
     fn parser_rec_type() {
         let db = DB::new("%rec: Book").unwrap();
-        assert_eq!(db.rectype, Some("Book".to_owned()));
+        assert_eq!(db.recordsets[0].rectype, Some("Book".to_owned()));
     }
 
     #[test]
     fn parser_type_line() {
         let db = DB::new("%type: Book line").unwrap();
-        let meta = db.types.get(&"Book".to_owned()).unwrap();
+        let meta = db.recordsets[0].types.get(&"Book".to_owned()).unwrap();
         assert!(matches!(meta.kind, Kind::Line))
     }
 
     #[test]
     fn parser_regex() {
         let db = DB::new("%type: Phone regexp /^[0-9]{10}$/").unwrap();
-        let meta = db.types.get(&"Phone".to_owned()).unwrap();
+        let meta = db.recordsets[0].types.get(&"Phone".to_owned()).unwrap();
 
         assert!(matches!(meta.kind, Kind::Regexp(_)));
 
@@ -285,7 +285,7 @@ mod tests {
     #[test]
     fn parser_enum() {
         let db = DB::new("%type: Status enum Loading Done Error").unwrap();
-        let meta = db.types.get(&"Status".to_owned()).unwrap();
+        let meta = db.recordsets[0].types.get(&"Status".to_owned()).unwrap();
 
         if let Kind::Enum(ref variants) = meta.kind {
             assert_eq!(variants.len(), 3);
@@ -320,14 +320,14 @@ mod tests {
         let db = DB::new("%confidential: Password Token").unwrap();
 
         assert!(matches!(
-            db.types.get("Password").unwrap(),
+            db.recordsets[0].types.get("Password").unwrap(),
             Meta {
                 kind: Kind::Confidential,
                 ..
             }
         ));
         assert!(matches!(
-            db.types.get("Token").unwrap(),
+            db.recordsets[0].types.get("Token").unwrap(),
             Meta {
                 kind: Kind::Confidential,
                 ..
@@ -361,7 +361,7 @@ Notes: very secure password
             .map(ToOwned::to_owned)
             .collect::<Vec<_>>();
 
-        assert_eq!(db.fields, expected)
+        assert_eq!(db.recordsets[0].fields, expected)
     }
 
     /// see manual 1.2 A Litte Example
@@ -399,28 +399,29 @@ Location: home
 # End of books.rec
 ";
         let db = DB::new(TEXT).unwrap();
+        let rs = &db.recordsets[0];
 
         // check fields
         let fields_expected = vec!["Title", "Author", "Publisher", "Location"]
             .iter()
             .map(ToOwned::to_owned)
             .collect::<Vec<_>>();
-        assert_eq!(db.fields, fields_expected);
+        assert_eq!(rs.fields, fields_expected);
 
         // check primary key
-        assert_eq!(db.primary_key, None);
+        assert_eq!(rs.primary_key, None);
 
         // check sort field
-        assert_eq!(db.sort_field, None);
+        assert_eq!(rs.sort_field, None);
 
         // check doc
-        assert_eq!(db.doc, Some("A book in my personal collection.".to_owned()));
+        assert_eq!(rs.doc, Some("A book in my personal collection.".to_owned()));
 
         // check types and constraints
-        let type_title = db.types.get("Title");
-        let type_location = db.types.get("Location");
-        let type_author = db.types.get("Author");
-        let type_publisher = db.types.get("Publisher");
+        let type_title = rs.types.get("Title");
+        let type_location = rs.types.get("Location");
+        let type_author = rs.types.get("Author");
+        let type_publisher = rs.types.get("Publisher");
 
         assert!(type_title.is_some());
         assert!(type_location.is_some());
@@ -462,48 +463,48 @@ Location: home
         assert!(type_publisher2.constraint.is_none());
 
         // check record values
-        assert_eq!(db.records.len(), 5);
+        assert_eq!(rs.records.len(), 5);
 
-        assert_eq!(db.records[0].len(), 4);
-        assert!(db.records[0].contains_key("Title"));
-        assert!(db.records[0].contains_key("Author"));
-        assert!(db.records[0].contains_key("Publisher"));
-        assert!(db.records[0].contains_key("Location"));
-        assert_eq!(db.records[0].get("Title").unwrap(), &Value::Line("GNU Emacs Manual".to_owned()));
-        assert_eq!(db.records[0].get("Author").unwrap(), &Value::Line("Richard M. Stallman".to_owned()));
-        assert_eq!(db.records[0].get("Publisher").unwrap(), &Value::Line("FSF".to_owned()));
-        assert_eq!(db.records[0].get("Location").unwrap(), &Value::Enum("home".to_owned()));
+        assert_eq!(rs.records[0].len(), 4);
+        assert!(rs.records[0].contains_key("Title"));
+        assert!(rs.records[0].contains_key("Author"));
+        assert!(rs.records[0].contains_key("Publisher"));
+        assert!(rs.records[0].contains_key("Location"));
+        assert_eq!(rs.records[0].get("Title").unwrap(), &Value::Line("GNU Emacs Manual".to_owned()));
+        assert_eq!(rs.records[0].get("Author").unwrap(), &Value::Line("Richard M. Stallman".to_owned()));
+        assert_eq!(rs.records[0].get("Publisher").unwrap(), &Value::Line("FSF".to_owned()));
+        assert_eq!(rs.records[0].get("Location").unwrap(), &Value::Enum("home".to_owned()));
 
-        assert_eq!(db.records[1].len(), 3);
-        assert!(db.records[1].contains_key("Title"));
-        assert!(db.records[1].contains_key("Author"));
-        assert!(db.records[1].contains_key("Location"));
-        assert_eq!(db.records[1].get("Title").unwrap(), &Value::Line("The Colour of Magic".to_owned()));
-        assert_eq!(db.records[1].get("Author").unwrap(), &Value::Line("Terry Pratchett".to_owned()));
-        assert_eq!(db.records[1].get("Location").unwrap(), &Value::Enum("loaned".to_owned()));
+        assert_eq!(rs.records[1].len(), 3);
+        assert!(rs.records[1].contains_key("Title"));
+        assert!(rs.records[1].contains_key("Author"));
+        assert!(rs.records[1].contains_key("Location"));
+        assert_eq!(rs.records[1].get("Title").unwrap(), &Value::Line("The Colour of Magic".to_owned()));
+        assert_eq!(rs.records[1].get("Author").unwrap(), &Value::Line("Terry Pratchett".to_owned()));
+        assert_eq!(rs.records[1].get("Location").unwrap(), &Value::Enum("loaned".to_owned()));
 
-        assert_eq!(db.records[2].len(), 3);
-        assert!(db.records[2].contains_key("Title"));
-        assert!(db.records[2].contains_key("Author"));
-        assert!(db.records[2].contains_key("Location"));
-        assert_eq!(db.records[2].get("Title").unwrap(), &Value::Line("Mio Cid".to_owned()));
-        assert_eq!(db.records[2].get("Author").unwrap(), &Value::Line("Anonymous".to_owned()));
-        assert_eq!(db.records[2].get("Location").unwrap(), &Value::Enum("home".to_owned()));
+        assert_eq!(rs.records[2].len(), 3);
+        assert!(rs.records[2].contains_key("Title"));
+        assert!(rs.records[2].contains_key("Author"));
+        assert!(rs.records[2].contains_key("Location"));
+        assert_eq!(rs.records[2].get("Title").unwrap(), &Value::Line("Mio Cid".to_owned()));
+        assert_eq!(rs.records[2].get("Author").unwrap(), &Value::Line("Anonymous".to_owned()));
+        assert_eq!(rs.records[2].get("Location").unwrap(), &Value::Enum("home".to_owned()));
 
-        assert_eq!(db.records[3].len(), 3);
-        assert!(db.records[3].contains_key("Title"));
-        assert!(db.records[3].contains_key("Author"));
-        assert!(db.records[3].contains_key("Location"));
-        assert_eq!(db.records[3].get("Title").unwrap(), &Value::Line("chapters.gnu.org administration guide".to_owned()));
-        assert_eq!(db.records[3].get_vec("Author").unwrap()[0], Value::Line("Nacho Gonzalez".to_owned()));
-        assert_eq!(db.records[3].get_vec("Author").unwrap()[1], Value::Line("Jose E. Marchesi".to_owned()));
-        assert_eq!(db.records[3].get("Location").unwrap(), &Value::Enum("unknown".to_owned()));
+        assert_eq!(rs.records[3].len(), 3);
+        assert!(rs.records[3].contains_key("Title"));
+        assert!(rs.records[3].contains_key("Author"));
+        assert!(rs.records[3].contains_key("Location"));
+        assert_eq!(rs.records[3].get("Title").unwrap(), &Value::Line("chapters.gnu.org administration guide".to_owned()));
+        assert_eq!(rs.records[3].get_vec("Author").unwrap()[0], Value::Line("Nacho Gonzalez".to_owned()));
+        assert_eq!(rs.records[3].get_vec("Author").unwrap()[1], Value::Line("Jose E. Marchesi".to_owned()));
+        assert_eq!(rs.records[3].get("Location").unwrap(), &Value::Enum("unknown".to_owned()));
 
-        assert_eq!(db.records[4].len(), 2);
-        assert!(db.records[4].contains_key("Title"));
-        assert!(db.records[4].contains_key("Location"));
-        assert_eq!(db.records[4].get("Title").unwrap(), &Value::Line("Yeelong User Manual".to_owned()));
-        assert_eq!(db.records[4].get("Location").unwrap(), &Value::Enum("home".to_owned()));
+        assert_eq!(rs.records[4].len(), 2);
+        assert!(rs.records[4].contains_key("Title"));
+        assert!(rs.records[4].contains_key("Location"));
+        assert_eq!(rs.records[4].get("Title").unwrap(), &Value::Line("Yeelong User Manual".to_owned()));
+        assert_eq!(rs.records[4].get("Location").unwrap(), &Value::Enum("home".to_owned()));
     }
 
     /// see manual 2.1 Fields
@@ -512,19 +513,20 @@ Location: home
         const TEXT: &str = "Name: Ada Lovelace
 ";
         let db = DB::new(TEXT).unwrap();
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 record
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 1 field on that record
-        assert_eq!(db.records[0].len(), 1);
+        assert_eq!(rs.records[0].len(), 1);
         // contains just field "Name"
-        assert_eq!(db.records[0].contains_key("Name"), true);
+        assert_eq!(rs.records[0].contains_key("Name"), true);
         // field "Name" has just 1 value
-        assert_eq!(db.records[0].is_vec("Name"), false);
+        assert_eq!(rs.records[0].is_vec("Name"), false);
         // name is a Line type
-        let name = db.records[0].get("Name").unwrap();
+        let name = rs.records[0].get("Name").unwrap();
         match &name {
             Value::Line(thestr) => {
                 // Name is Ada Lovelace
@@ -661,24 +663,25 @@ name: Foo2
 nAmE: Foo3
 ";
         let db = DB::new(TEXT).unwrap();
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 records
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 3 fields on that record
-        assert_eq!(db.records[0].len(), 3);
+        assert_eq!(rs.records[0].len(), 3);
 
         // contains field "Name"
-        assert_eq!(db.records[0].contains_key("Name"), true);
-        assert_eq!(db.records[0].contains_key("name"), true);
-        assert_eq!(db.records[0].contains_key("nAmE"), true);
+        assert_eq!(rs.records[0].contains_key("Name"), true);
+        assert_eq!(rs.records[0].contains_key("name"), true);
+        assert_eq!(rs.records[0].contains_key("nAmE"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Name"), false);
-        assert_eq!(db.records[0].is_vec("name"), false);
-        assert_eq!(db.records[0].is_vec("nAmE"), false);
+        assert_eq!(rs.records[0].is_vec("Name"), false);
+        assert_eq!(rs.records[0].is_vec("name"), false);
+        assert_eq!(rs.records[0].is_vec("nAmE"), false);
         // Name is a Line type
-        match &db.records[0].get("Name").unwrap() {
+        match &rs.records[0].get("Name").unwrap() {
             Value::Line(thestr) => {
                 // Name matches
                 assert_eq!(*thestr, "Foo1".to_owned());
@@ -686,7 +689,7 @@ nAmE: Foo3
             _ => { assert!(false); }
         }
         // name is a Line type
-        match &db.records[0].get("name").unwrap() {
+        match &rs.records[0].get("name").unwrap() {
             Value::Line(thestr) => {
                 // Name matches
                 assert_eq!(*thestr, "Foo2".to_owned());
@@ -694,7 +697,7 @@ nAmE: Foo3
             _ => { assert!(false); }
         }
         // nAmE is a Line type
-        match &db.records[0].get("nAmE").unwrap() {
+        match &rs.records[0].get("nAmE").unwrap() {
             Value::Line(thestr) => {
                 // Name matches
                 assert_eq!(*thestr, "Foo3".to_owned());
@@ -713,29 +716,30 @@ ab1:
 A_Field:
 ";
         let db = DB::new(TEXT).unwrap();
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 records
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 3 fields on that record
-        assert_eq!(db.records[0].len(), 5);
+        assert_eq!(rs.records[0].len(), 5);
 
         // contains field "Name"
-        assert_eq!(db.records[0].contains_key("Foo"), true);
-        assert_eq!(db.records[0].contains_key("foo"), true);
-        assert_eq!(db.records[0].contains_key("A23"), true);
-        assert_eq!(db.records[0].contains_key("ab1"), true);
-        assert_eq!(db.records[0].contains_key("A_Field"), true);
+        assert_eq!(rs.records[0].contains_key("Foo"), true);
+        assert_eq!(rs.records[0].contains_key("foo"), true);
+        assert_eq!(rs.records[0].contains_key("A23"), true);
+        assert_eq!(rs.records[0].contains_key("ab1"), true);
+        assert_eq!(rs.records[0].contains_key("A_Field"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Foo"), false);
-        assert_eq!(db.records[0].is_vec("foo"), false);
-        assert_eq!(db.records[0].is_vec("A23"), false);
-        assert_eq!(db.records[0].is_vec("ab1"), false);
-        assert_eq!(db.records[0].is_vec("A_Field"), false);
+        assert_eq!(rs.records[0].is_vec("Foo"), false);
+        assert_eq!(rs.records[0].is_vec("foo"), false);
+        assert_eq!(rs.records[0].is_vec("A23"), false);
+        assert_eq!(rs.records[0].is_vec("ab1"), false);
+        assert_eq!(rs.records[0].is_vec("A_Field"), false);
         // Foo is a Line type
         let empty = "".to_owned();
-        match &db.records[0].get("Foo").unwrap() {
+        match &rs.records[0].get("Foo").unwrap() {
             Value::Line(thestr) => {
                 // value matches
                 assert_eq!(*thestr, empty);
@@ -743,7 +747,7 @@ A_Field:
             _ => { assert!(false); }
         }
         // foo is a Line type
-        match &db.records[0].get("foo").unwrap() {
+        match &rs.records[0].get("foo").unwrap() {
             Value::Line(thestr) => {
                 // Name matches
                 assert_eq!(*thestr, empty);
@@ -751,7 +755,7 @@ A_Field:
             _ => { assert!(false); }
         }
         // A23 is a Line type
-        match &db.records[0].get("A23").unwrap() {
+        match &rs.records[0].get("A23").unwrap() {
             Value::Line(thestr) => {
                 // Name matches
                 assert_eq!(*thestr, empty);
@@ -759,7 +763,7 @@ A_Field:
             _ => { assert!(false); }
         }
         // ab1 is a Line type
-        match &db.records[0].get("ab1").unwrap() {
+        match &rs.records[0].get("ab1").unwrap() {
             Value::Line(thestr) => {
                 // Name matches
                 assert_eq!(*thestr, empty);
@@ -767,7 +771,7 @@ A_Field:
             _ => { assert!(false); }
         }
         // A_Field is a Line type
-        match &db.records[0].get("A_Field").unwrap() {
+        match &rs.records[0].get("A_Field").unwrap() {
             Value::Line(thestr) => {
                 // Name matches
                 assert_eq!(*thestr, empty);
@@ -801,20 +805,21 @@ A_Field:
 ";
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 records
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 1 fields on that record
-        assert_eq!(db.records[0].len(), 1);
+        assert_eq!(rs.records[0].len(), 1);
 
         // contains field "Name"
-        assert_eq!(db.records[0].contains_key("Name"), true);
+        assert_eq!(rs.records[0].contains_key("Name"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Name"), false);
+        assert_eq!(rs.records[0].is_vec("Name"), false);
         // Name is a Line type
-        match &db.records[0].get("Name").unwrap() {
+        match &rs.records[0].get("Name").unwrap() {
             Value::Line(thestr) => {
                 // value matches
                 assert_eq!(*thestr, "Mr. Customer".to_owned());
@@ -830,20 +835,21 @@ A_Field:
 ";
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 records
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 1 fields on that record
-        assert_eq!(db.records[0].len(), 1);
+        assert_eq!(rs.records[0].len(), 1);
 
         // contains field "Name"
-        assert_eq!(db.records[0].contains_key("Name"), true);
+        assert_eq!(rs.records[0].contains_key("Name"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Name"), false);
+        assert_eq!(rs.records[0].is_vec("Name"), false);
         // Name is a Line type
-        match &db.records[0].get("Name").unwrap() {
+        match &rs.records[0].get("Name").unwrap() {
             Value::Line(thestr) => {
                 // value matches
                 assert_eq!(*thestr, "Mr. Customer says \"So much wow!\", yet it seems fun, ain't it? Smells like Mötör's Head 😂".to_owned());
@@ -861,20 +867,21 @@ A_Field:
 ";
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 records
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 1 fields on that record
-        assert_eq!(db.records[0].len(), 1);
+        assert_eq!(rs.records[0].len(), 1);
 
         // contains field "Foo"
-        assert_eq!(db.records[0].contains_key("Foo"), true);
+        assert_eq!(rs.records[0].contains_key("Foo"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Foo"), false);
+        assert_eq!(rs.records[0].is_vec("Foo"), false);
         // Name is a Line type
-        match &db.records[0].get("Foo").unwrap() {
+        match &rs.records[0].get("Foo").unwrap() {
             Value::Line(thestr) => {
                 // value matches
                 assert_eq!(*thestr, "bar1\nbar2\n bar3".to_owned());
@@ -912,20 +919,21 @@ A_Field:
 ";  // NOTE: difference to previous test is the space after "Foo:"
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 records
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 1 fields on that record
-        assert_eq!(db.records[0].len(), 1);
+        assert_eq!(rs.records[0].len(), 1);
 
         // contains field "Foo"
-        assert_eq!(db.records[0].contains_key("Foo"), true);
+        assert_eq!(rs.records[0].contains_key("Foo"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Foo"), false);
+        assert_eq!(rs.records[0].is_vec("Foo"), false);
         // Name is a Line type
-        match &db.records[0].get("Foo").unwrap() {
+        match &rs.records[0].get("Foo").unwrap() {
             Value::Line(thestr) => {
                 // value matches
                 // NOTE: GNU recutils also does not return the " " after "Foo:"
@@ -944,20 +952,21 @@ A_Field:
 ";  // NOTE: difference to previous test is two spaces after "Foo:" the last of which should be preserved
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 records
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 1 fields on that record
-        assert_eq!(db.records[0].len(), 1);
+        assert_eq!(rs.records[0].len(), 1);
 
         // contains field "Foo"
-        assert_eq!(db.records[0].contains_key("Foo"), true);
+        assert_eq!(rs.records[0].contains_key("Foo"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Foo"), false);
+        assert_eq!(rs.records[0].is_vec("Foo"), false);
         // Name is a Line type
-        match &db.records[0].get("Foo").unwrap() {
+        match &rs.records[0].get("Foo").unwrap() {
             Value::Line(thestr) => {
                 // value matches
                 // NOTE: GNU recutils preserves the space
@@ -975,22 +984,23 @@ Name2: Value2
 Name2: Value3
 ";
         let db = DB::new(TEXT).unwrap();
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 records
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 2 unique fields on that record
-        assert_eq!(db.records[0].len(), 2);
+        assert_eq!(rs.records[0].len(), 2);
 
         // contains given fields
-        assert_eq!(db.records[0].contains_key("Name1"), true);
-        assert_eq!(db.records[0].contains_key("Name2"), true);
+        assert_eq!(rs.records[0].contains_key("Name1"), true);
+        assert_eq!(rs.records[0].contains_key("Name2"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Name1"), false);
-        assert_eq!(db.records[0].is_vec("Name2"), true);
+        assert_eq!(rs.records[0].is_vec("Name1"), false);
+        assert_eq!(rs.records[0].is_vec("Name2"), true);
         // Name1 is a Line type
-        match &db.records[0].get("Name1").unwrap() {
+        match &rs.records[0].get("Name1").unwrap() {
             Value::Line(thestr) => {
                 // Name matches
                 assert_eq!(*thestr, "Value1".to_owned());
@@ -998,7 +1008,7 @@ Name2: Value3
             _ => { assert!(false); }
         }
         // Name2 is a Line type
-        let name2 = db.records[0].get_vec("Name2").unwrap();
+        let name2 = rs.records[0].get_vec("Name2").unwrap();
         match &name2[0] {
             Value::Line(thestr) => {
                 // Name matches
@@ -1023,15 +1033,16 @@ Email: john.smith@foomail.com
 Email: john@smith.name
 ";
         let db = DB::new(TEXT).unwrap();
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 records
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 2 unique fields on that record
-        assert_eq!(db.records[0].len(), 2);
+        assert_eq!(rs.records[0].len(), 2);
         // size of the record is 3
-        assert_eq!(db.records[0].size(), 3);
+        assert_eq!(rs.records[0].size(), 3);
     }
 
     /// see manual 2.2 Records
@@ -1047,21 +1058,22 @@ Name: Matusalem
 Age: 969
 ";
         let db = DB::new(TEXT).unwrap();
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // number of records
-        assert_eq!(db.records.len(), 3);
+        assert_eq!(rs.records.len(), 3);
         // total number of fields
-        assert_eq!(db.fields.len(), 2);
+        assert_eq!(rs.fields.len(), 2);
         // number of unique fields on records
-        assert_eq!(db.records[0].len(), 2);
-        assert_eq!(db.records[1].len(), 2);
-        assert_eq!(db.records[2].len(), 2);
+        assert_eq!(rs.records[0].len(), 2);
+        assert_eq!(rs.records[1].len(), 2);
+        assert_eq!(rs.records[2].len(), 2);
         // size of each record
-        assert_eq!(db.records[0].size(), 2);
-        assert_eq!(db.records[1].size(), 2);
-        assert_eq!(db.records[2].size(), 2);
+        assert_eq!(rs.records[0].size(), 2);
+        assert_eq!(rs.records[1].size(), 2);
+        assert_eq!(rs.records[2].size(), 2);
     }
 
     /// see manual 2.3 Comments
@@ -1075,22 +1087,23 @@ Occupation: Unoccupied
 ";
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 records
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 1 fields on that record
-        assert_eq!(db.records[0].len(), 2);
+        assert_eq!(rs.records[0].len(), 2);
 
         // contains field "Foo"
-        assert_eq!(db.records[0].contains_key("Name"), true);
-        assert_eq!(db.records[0].contains_key("Occupation"), true);
+        assert_eq!(rs.records[0].contains_key("Name"), true);
+        assert_eq!(rs.records[0].contains_key("Occupation"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Name"), false);
-        assert_eq!(db.records[0].is_vec("Occupation"), false);
+        assert_eq!(rs.records[0].is_vec("Name"), false);
+        assert_eq!(rs.records[0].is_vec("Occupation"), false);
         // Name is a Line type
-        match &db.records[0].get("Name").unwrap() {
+        match &rs.records[0].get("Name").unwrap() {
             Value::Line(thestr) => {
                 // value matches
                 assert_eq!(*thestr, "Jose E. Marchesi".to_owned());
@@ -1098,7 +1111,7 @@ Occupation: Unoccupied
             _ => { assert!(false); }
         }
         // Occupation is a Line type
-        match &db.records[0].get("Occupation").unwrap() {
+        match &rs.records[0].get("Occupation").unwrap() {
             Value::Line(thestr) => {
                 // value matches
                 assert_eq!(*thestr, "Unoccupied".to_owned());
@@ -1124,20 +1137,21 @@ Name: Road Runner
 ";
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 records
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 1 fields on that record
-        assert_eq!(db.records[0].len(), 1);
+        assert_eq!(rs.records[0].len(), 1);
 
         // contains field "Foo"
-        assert_eq!(db.records[0].contains_key("Name"), true);
+        assert_eq!(rs.records[0].contains_key("Name"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Name"), false);
+        assert_eq!(rs.records[0].is_vec("Name"), false);
         // Name is a Line type
-        match &db.records[0].get("Name").unwrap() {
+        match &rs.records[0].get("Name").unwrap() {
             Value::Line(thestr) => {
                 // value matches
                 assert_eq!(*thestr, "Road Runner".to_owned());
@@ -1154,20 +1168,21 @@ Age: 53
 ";
         // should return Ok - but the value of Name field must include the false comment
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+        let rs = &db.recordsets[0];
 
         // untyped recordset
-        assert!(db.rectype.is_none());
+        assert!(rs.rectype.is_none());
         // 1 records
-        assert_eq!(db.records.len(), 1);
+        assert_eq!(rs.records.len(), 1);
         // 1 fields on that record
-        assert_eq!(db.records[0].len(), 2);
+        assert_eq!(rs.records[0].len(), 2);
 
         // contains field "Name"
-        assert_eq!(db.records[0].contains_key("Name"), true);
+        assert_eq!(rs.records[0].contains_key("Name"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Name"), false);
+        assert_eq!(rs.records[0].is_vec("Name"), false);
         // Name is a Line type
-        match &db.records[0].get("Name").unwrap() {
+        match &rs.records[0].get("Name").unwrap() {
             Value::Line(thestr) => {
                 // value matches - this is not a comment
                 assert_eq!(*thestr, "Peter the Great # Russian Tsar".to_owned());
@@ -1189,25 +1204,26 @@ Name: Entry 2
 ";
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+        let rs = &db.recordsets[0];
 
         // typed recordset
-        assert!(db.rectype.is_some());
+        assert!(rs.rectype.is_some());
         // type of recordset is Entry
-        assert_eq!(db.rectype.unwrap(), "Entry".to_owned());
+        assert_eq!(rs.rectype.as_deref().unwrap(), "Entry");
         // 2 records
-        assert_eq!(db.records.len(), 2);
+        assert_eq!(rs.records.len(), 2);
         // 2 fields on that record
-        assert_eq!(db.records[0].len(), 2);
-        assert_eq!(db.records[1].len(), 2);
+        assert_eq!(rs.records[0].len(), 2);
+        assert_eq!(rs.records[1].len(), 2);
 
         // contains fields
-        assert_eq!(db.records[0].contains_key("Id"), true);
-        assert_eq!(db.records[0].contains_key("Name"), true);
+        assert_eq!(rs.records[0].contains_key("Id"), true);
+        assert_eq!(rs.records[0].contains_key("Name"), true);
         // fields are no multi-fields, but recognized as separate fields
-        assert_eq!(db.records[0].is_vec("Id"), false);
-        assert_eq!(db.records[0].is_vec("Name"), false);
+        assert_eq!(rs.records[0].is_vec("Id"), false);
+        assert_eq!(rs.records[0].is_vec("Name"), false);
         // Id is a Line type
-        match &db.records[0].get("Id").unwrap() {
+        match &rs.records[0].get("Id").unwrap() {
             Value::Line(thestr) => {
                 // value matches - this is not a comment
                 assert_eq!(*thestr, "1".to_owned());
@@ -1215,7 +1231,7 @@ Name: Entry 2
             _ => { assert!(false); }
         }
         // Name is a Line type
-        match &db.records[0].get("Name").unwrap() {
+        match &rs.records[0].get("Name").unwrap() {
             Value::Line(thestr) => {
                 // value matches - this is not a comment
                 assert_eq!(*thestr, "Entry 1".to_owned());
@@ -1247,11 +1263,12 @@ Date: 21 April 2011
 ";
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+        let rs = &db.recordsets[0];
 
         // typed recordset
-        assert!(db.rectype.is_some());
+        assert!(rs.rectype.is_some());
         // type of recordset is Entry
-        assert_eq!(db.rectype.unwrap(), "Article".to_owned());
+        assert_eq!(rs.rectype.as_deref().unwrap(), "Article");
         //TODO finish remaining test
         /*
         // 2 records
