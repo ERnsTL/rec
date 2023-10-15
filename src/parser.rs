@@ -1497,7 +1497,7 @@ Date: 21 April 2011
         // type of recordset is Entry
         assert_eq!(rs0.rectype.as_deref().unwrap(), "Article");
         // 0 records
-        assert_eq!(rs0.records.len(), 2);
+        assert_eq!(rs0.records.len(), 0);
         // 0 fields
         assert_eq!(rs0.fields.len(), 0);
 
@@ -1508,7 +1508,7 @@ Date: 21 April 2011
         // type of recordset is Entry
         assert_eq!(rs1.rectype.as_deref().unwrap(), "Stock");
         // 0 records
-        assert_eq!(rs1.records.len(), 2);
+        assert_eq!(rs1.records.len(), 0);
         // 0 fields
         assert_eq!(rs1.fields.len(), 0);
     }
