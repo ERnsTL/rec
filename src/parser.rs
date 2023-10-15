@@ -386,7 +386,7 @@ Notes: very secure password
             .map(ToOwned::to_owned)
             .collect::<Vec<_>>();
 
-        assert_eq!(db.recordsets[0].fields, expected)
+        assert_eq!(db.recordsets[0].fields, expected);
     }
 
     /// see manual 1.2 A Litte Example
