@@ -1747,4 +1747,23 @@ Concept: 12
             }
         }
     }
+
+    /// see manual 2.4.3 Documenting Records
+    #[test]
+    fn parser_2_4_3_recordset_documentation() {
+        const TEXT: &str = "%rec: Contact
+%doc: A more verbose description! Yes: This is the way.
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
 }
