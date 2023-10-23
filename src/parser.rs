@@ -1766,4 +1766,34 @@ Concept: 12
             }
         }
     }
+
+    /// see manual 2.4.3 Documenting Records
+    #[test]
+    fn parser_2_4_3_recordset_documentation_character_restrictions() {
+        const TEXT: &str = "%rec: Contact
+%doc: More verbose :+?%\"' it cannot get!
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // number of recordsets
+        assert_eq!(db.recordsets.len(), 1);
+        // prepare recordsets
+        let rs0 = &db.recordsets[0];
+
+        // check recordset[0]
+
+        // typed recordset
+        assert!(rs0.rectype.is_some());
+        // type of recordset
+        assert_eq!(rs0.rectype.as_deref().unwrap(), "Contact");
+        // number of records
+        assert_eq!(rs0.records.len(), 0);
+        // number of fields
+        assert_eq!(rs0.fields.len(), 0);
+        // documentation field
+        assert_eq!(rs0.doc.is_some(), true);
+        // value of documentation
+        assert_eq!(rs0.doc.as_deref().unwrap(), "More verbose :+?%\"' it cannot get!");
+    }
 }
