@@ -1750,7 +1750,7 @@ Concept: 12
 
     /// see manual 2.4.3 Documenting Records
     #[test]
-    fn parser_2_4_3_recordset_documentation() {
+    fn parser_2_4_3_recordset_documentation_field() {
         const TEXT: &str = "%rec: Contact
 %doc: A more verbose description! Yes: This is the way.
 ";
