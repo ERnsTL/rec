@@ -1796,4 +1796,164 @@ Concept: 12
         // value of documentation
         assert_eq!(rs0.doc.as_deref().unwrap(), "More verbose :+?%\"' it cannot get!");
     }
+
+    /// see manual 2.4.3 Documenting Records
+    #[test]
+    fn parser_2_4_3_two_record_sets_with_rec_and_doc_fields_example() {
+        const TEXT: &str = "%rec: Contact
+%doc: Family, friends and acquaintances (other than business).
+
+Name: Granny
+Phone: +12 23456677
+
+Name: Edwina
+Phone: +55 0923 8765
+
+
+%rec: Associate
+%doc: Colleagues and other business contacts
+
+Name: Karl Schmidt
+Phone: +49 88234566
+
+Name: Genevieve Curie
+Phone: +33 34 87 65
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // number of recordsets
+        assert_eq!(db.recordsets.len(), 2);
+        // prepare recordsets
+        let rs0 = &db.recordsets[0];
+        let rs1 = &db.recordsets[1];
+
+        // check recordset[0]
+
+        // typed recordset
+        assert!(rs0.rectype.is_some());
+        // type of recordset
+        assert_eq!(rs0.rectype.as_deref().unwrap(), "Contact");
+        // has documentation field
+        assert!(rs0.doc.is_some());
+        // value of documentation field
+        assert_eq!(rs0.doc.as_deref().unwrap(), "Family, friends and acquaintances (other than business).");
+        // 2 records
+        assert_eq!(rs0.records.len(), 2);
+        // 2 fields on records
+        assert_eq!(rs0.records[0].len(), 2);
+        assert_eq!(rs0.records[1].len(), 2);
+
+        // check record[0]
+        // contains fields
+        assert_eq!(rs0.records[0].contains_key("Name"), true);
+        assert_eq!(rs0.records[0].contains_key("Phone"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(rs0.records[0].is_vec("Name"), false);
+        assert_eq!(rs0.records[0].is_vec("Phone"), false);
+        // Name is a Line type
+        match &rs0.records[0].get("Name").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "Granny".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // Phone is a Line type
+        match &rs0.records[0].get("Phone").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "+12 23456677".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+
+        // check record[1]
+        // contains fields
+        assert_eq!(rs0.records[1].contains_key("Name"), true);
+        assert_eq!(rs0.records[1].contains_key("Phone"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(rs0.records[1].is_vec("Name"), false);
+        assert_eq!(rs0.records[1].is_vec("Phone"), false);
+        // Name is a Line type
+        match &rs0.records[1].get("Name").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "Edwina".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // Phone is a Line type
+        match &rs0.records[1].get("Phone").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "+55 0923 8765".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+
+        // check recordset[1]
+
+        // typed recordset
+        assert!(rs1.rectype.is_some());
+        // type of recordset is Entry
+        assert_eq!(rs1.rectype.as_deref().unwrap(), "Associate");
+        // has documentation field
+        assert!(rs1.doc.is_some());
+        // value of documentation field
+        assert_eq!(rs1.doc.as_deref().unwrap(), "Colleagues and other business contacts");
+        // 2 records
+        assert_eq!(rs1.records.len(), 2);
+        // 2 fields on that record
+        assert_eq!(rs1.records[0].len(), 2);
+        assert_eq!(rs1.records[1].len(), 2);
+
+        // check records[0]
+        // contains fields
+        assert_eq!(rs1.records[0].contains_key("Name"), true);
+        assert_eq!(rs1.records[0].contains_key("Phone"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(rs1.records[0].is_vec("Name"), false);
+        assert_eq!(rs1.records[0].is_vec("Phone"), false);
+        // Name is a Line type
+        match &rs1.records[0].get("Name").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "Karl Schmidt".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // Phone is a Line type
+        match &rs1.records[0].get("Phone").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "+49 88234566".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+
+        // check records[1]
+        // contains fields
+        assert_eq!(rs1.records[1].contains_key("Name"), true);
+        assert_eq!(rs1.records[1].contains_key("Phone"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(rs1.records[1].is_vec("Name"), false);
+        assert_eq!(rs1.records[1].is_vec("Phone"), false);
+        // Name is a Line type
+        match &rs1.records[1].get("Name").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "Genevieve Curie".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+        // Phone is a Line type
+        match &rs1.records[1].get("Phone").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "+33 34 87 65".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }
 }
