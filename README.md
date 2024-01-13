@@ -74,6 +74,10 @@ The following examples and definitions are covered by unit tests, listed by chap
 * 18 regular expressions:  TODO expand
 * 19 date input formats:  TODO expand
 
+## Implementation notes
+
+* The record descriptor special field "prohibit" is correct as per manual, even though it is called "prohibited fields" in the manual and the special field for allowed fields is called "allowed". This is an inconsistency in the file format. It would be possible to allow %prohibited in this implementation, but it would error on GNU recutils.
+
 ## Future
 
 * TODO compatibility and compliance with v1.9 from 2022
