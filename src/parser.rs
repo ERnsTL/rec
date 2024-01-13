@@ -395,7 +395,7 @@ mod tests {
 
     #[test]
     fn parser_fields_order() {
-        const TEXT: &str = "
+        const TEXT: &str = "%rec: Logins
 %type: Login line
 %type: Password line
 
