@@ -36,7 +36,10 @@ impl Parser {
             match token {   //TODO recognize beginning of untyped recordset
                 Token::Keyword(keyword, value) => {
                     let args = value.split_whitespace().collect();
-                    self.parse_keyword(keyword, args)?;
+                    match self.parse_keyword(keyword, args) {
+                        Ok(_) => {},
+                        Err(err) => return Err(format!("parsing keyword '{}': {}", keyword, err).into()),
+                    }
                     self.have_something = true;
                 },
                 Token::Field(key, value) => {
@@ -102,7 +105,10 @@ impl Parser {
             "mandatory" | "allowed" | "prohibit" => {
                 for field in args {
                     let meta = self.db.recordsets[self.current_recordset].types.entry(field.to_owned()).or_default();
-                    meta.constraint = Some(key.parse()?);
+                    match key.parse() {
+                        Ok(constraint) => meta.constraint = Some(constraint),
+                        Err(err) => return Err(format!("parsing mandatory|allowed|prohibit constraint '{}': {}", key, err).into()),
+                    }
                 }
             }
             "unique" => {

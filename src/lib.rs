@@ -61,7 +61,7 @@ impl FromStr for Constraint {
         match s {
             "mandatory" => Ok(Constraint::Mandatory),
             "allowed" => Ok(Constraint::Allowed),
-            "prohibited" => Ok(Constraint::Prohibited),
+            "prohibit" => Ok(Constraint::Prohibited),   //NOTE: inconsistency in file format spec, should rightly be "prohibited"
             _ => Err(format!("unknown constraint: {}", s).into()),
         }
     }
