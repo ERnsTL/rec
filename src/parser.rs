@@ -90,7 +90,7 @@ impl Parser {
                 self.current_recordset += 1;
             }
         }
-        match key {
+        match key { //TODO optimize - if ordering of match arms makes a difference, then order them by frequency of use
             "rec" => {
                 self.record_descriptor_has_rec = true;
                 let rectype = args.get(0).ok_or("expected rec type")?;  //TODO optimize possible allocation - compare performance with assign, then check the .rectype value since most DBs are expected to be compliant
@@ -99,30 +99,7 @@ impl Parser {
                     false => return Err(format!("invalid rec type name value: {}", rectype).into()),
                 }
             },
-            "key" => self.db.recordsets[self.current_recordset].primary_key = Some(args.get(0).ok_or("expected key")?.to_string()),
-            "doc" => self.db.recordsets[self.current_recordset].doc = Some(args.join(" ")),
-            "sort" => {
-                let field = args.get(0).ok_or("expected sort field")?.to_string();
-                self.db.recordsets[self.current_recordset].sort_field = Some(field)
-            }
-            "type" => {
-                let field_name = args.get(0).ok_or("expected field name")?.to_string();
-                let kind = parse_type(args)?;
-
-                let meta = self.db.recordsets[self.current_recordset].types.entry(field_name).or_default();
-
-                meta.kind = kind;
-            }
-            "confidential" => {
-                for field in args {
-                    let meta = self.db.recordsets[self.current_recordset].types.entry(field.to_owned()).or_default();
-                    if !matches!(meta.kind, Kind::Line) {
-                        return Err("confidential fields are always lines".into());
-                    }
-                    meta.kind = Kind::Confidential;
-                }
-            }
-            "mandatory" | "allowed" | "prohibited" => {
+            "mandatory" | "allowed" | "prohibit" => {
                 for field in args {
                     let meta = self.db.recordsets[self.current_recordset].types.entry(field.to_owned()).or_default();
                     meta.constraint = Some(key.parse()?);
@@ -134,9 +111,44 @@ impl Parser {
                     meta.unique = true
                 }
             }
+            "key" => self.db.recordsets[self.current_recordset].primary_key = Some(args.get(0).ok_or("expected key")?.to_string()),
+            "doc" => self.db.recordsets[self.current_recordset].doc = Some(args.join(" ")),
+            "typedef" => {
+                //TODO implement
+            }
+            "type" => {
+                let field_name = args.get(0).ok_or("expected field name")?.to_string();
+                let kind = parse_type(args)?;
 
+                let meta = self.db.recordsets[self.current_recordset].types.entry(field_name).or_default();
+
+                meta.kind = kind;
+            }
+            "auto" => {
+                //TODO implement
+            }
+            "sort" => {
+                let field = args.get(0).ok_or("expected sort field")?.to_string();
+                self.db.recordsets[self.current_recordset].sort_field = Some(field)
+            }
+            "size" => {
+                //TODO implement
+            }
+            "constraint" => {
+                //TODO implement
+            }
+            "confidential" => {
+                for field in args {
+                    let meta = self.db.recordsets[self.current_recordset].types.entry(field.to_owned()).or_default();
+                    if !matches!(meta.kind, Kind::Line) {
+                        return Err("confidential fields are always lines".into());
+                    }
+                    meta.kind = Kind::Confidential;
+                }
+            }
+            // unknown special field
             key => {
-                return Err(format!("unexpected special field {}", key).into()); //TODO optimize
+                return Err(format!("unknown special field {}", key).into()); //TODO optimize
             },
         };
 
