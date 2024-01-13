@@ -19,6 +19,7 @@ pub(crate) struct Parser {
     current_recordset: usize,   // index of recordset vector that we are currently filling into
     have_something: bool,
     inside_record_descriptor: bool,
+    record_descriptor_has_rec: bool,
 }
 
 impl Parser {
@@ -29,6 +30,7 @@ impl Parser {
     pub(crate) fn parse(mut self, tokens: Vec<Token>) -> Result<DB, Err> {
         self.have_something = false;
         self.inside_record_descriptor = false;
+        self.record_descriptor_has_rec = false;
 
         for token in tokens.iter() {
             match token {   //TODO recognize beginning of untyped recordset
@@ -47,7 +49,14 @@ impl Parser {
                 }
                 Token::Blank => {
                     // end of record descriptor
-                    self.inside_record_descriptor = false;
+                    if self.inside_record_descriptor {
+                        // now we are outside of record descriptor
+                        self.inside_record_descriptor = false;
+                        // check if we got the mandatory rec special field
+                        if !self.record_descriptor_has_rec {
+                            return Err("missing rec special field".into());
+                        }
+                    }
                     // push current record into current recordset
                     if let Some(rec) = self.current_record.take() {
                         self.have_something = true;
@@ -73,9 +82,10 @@ impl Parser {
             // current_recordset is already 0
         }
 
+        self.inside_record_descriptor = true;
         match key {
             "rec" => {
-                self.inside_record_descriptor = true;
+                self.record_descriptor_has_rec = true;
                 if self.have_something {
                     // add additional recordset
                     self.db.recordsets.push(RecordSet::default());
