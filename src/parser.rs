@@ -2103,7 +2103,7 @@ Title: Fountain Pen
 
     /// see manual 2.4.4 Record Sets Properties
     #[test]
-    fn parser_2_4_4_special_fields_start_with_percent1() {
+    fn parser_2_4_4_special_fields_start_with_percent() {
         const TEXT: &str = "%rec: Item
 %type: Id int
 %mandatory: Title
@@ -2247,7 +2247,7 @@ Title: Fountain Pen
 
     /// see manual 2.4.4 Record Sets Properties
     #[test]
-    fn parser_2_4_4_special_fields_start_with_percent2() {
+    fn parser_2_4_4_unknown_special_fields() {
         const TEXT: &str = "%rec: Item
 %type: Id int
 %mandatory: Title
