@@ -18,6 +18,7 @@ pub(crate) struct Parser {
     current_record: Option<Record>,
     current_recordset: usize,   // index of recordset vector that we are currently filling into
     have_something: bool,
+    inside_record_descriptor: bool,
 }
 
 impl Parser {
@@ -27,6 +28,7 @@ impl Parser {
 
     pub(crate) fn parse(mut self, tokens: Vec<Token>) -> Result<DB, Err> {
         self.have_something = false;
+        self.inside_record_descriptor = false;
 
         for token in tokens.iter() {
             match token {   //TODO recognize beginning of untyped recordset
@@ -36,10 +38,17 @@ impl Parser {
                     self.have_something = true;
                 },
                 Token::Field(key, value) => {
+                    if self.inside_record_descriptor {
+                        // inside record descriptor, non-special fields have no effect (see manual 2.4.4 Record Sets Properties)
+                        continue;
+                    }
                     self.parse_field(key, value)?;
                     self.have_something = true;
                 }
                 Token::Blank => {
+                    // end of record descriptor
+                    self.inside_record_descriptor = false;
+                    // push current record into current recordset
                     if let Some(rec) = self.current_record.take() {
                         self.have_something = true;
                         self.db.recordsets[self.current_recordset].records.push(rec);   //TODO optimize push into this long chain of indirections or have a local empty records = Vec::new() ? or keep a reference to db.recordsets[self.current_recordset].records ?
@@ -66,6 +75,7 @@ impl Parser {
 
         match key {
             "rec" => {
+                self.inside_record_descriptor = true;
                 if self.have_something {
                     // add additional recordset
                     self.db.recordsets.push(RecordSet::default());
