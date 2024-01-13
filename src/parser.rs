@@ -1956,4 +1956,148 @@ Phone: +33 34 87 65
             _ => { assert!(false); }
         }
     }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_example_for_mandatory() {
+        const TEXT: &str = "%rec: Item
+%type: Id int
+%mandatory: Title
+
+Id: 10
+Title: Notebook (big)
+
+Id: 11
+Title: Fountain Pen
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // number of recordsets
+        assert_eq!(db.recordsets.len(), 1);
+        // prepare recordsets
+        let rs0 = &db.recordsets[0];
+
+        // check recordset[0]
+
+        // typed recordset
+        assert!(rs0.rectype.is_some());
+        // type of recordset
+        assert_eq!(rs0.rectype.as_deref().unwrap(), "Item");
+        // recordset types
+        assert_eq!(rs0.types.len(), 2);
+        // type of fields and constraints
+        // type of field Id
+        if let Some(thetype) = rs0.types.get("Id") {
+            // check for type of field
+            //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
+            match &thetype.kind {
+                Kind::Int => {
+                    // this is OK
+                    assert!(true);
+                }
+                _ => {
+                    // this is not OK
+                    assert!(false);
+                }
+            }
+            // check for uniqueness constraint
+            assert_eq!(&thetype.unique, &false);
+            // check for a mandatory constraint
+            assert!(&thetype.constraint.is_none());
+        } else {
+            assert!(false);
+        }
+        // type of field Title
+        if let Some(thetype) = rs0.types.get("Title") {
+            // check for type of field
+            //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
+            match &thetype.kind {
+                Kind::Line => {
+                    // this is OK
+                    assert!(true);
+                }
+                _ => {
+                    // this is not OK
+                    assert!(false);
+                }
+            }
+            // check for uniqueness constraint
+            assert_eq!(&thetype.unique, &false);
+            // check for a constraint
+            if let Some(constraint) = &thetype.constraint {
+                match constraint {
+                    Constraint::Mandatory => {
+                        // this is OK
+                        assert!(true);
+                    }
+                    _ => {
+                        // this is not OK
+                        assert!(false);
+                    }
+                }
+            } else {
+                assert!(false);
+            }
+        } else {
+            assert!(false);
+        }
+        // has documentation field
+        assert!(rs0.doc.is_none());
+        // value of documentation field
+        //assert_eq!(rs0.doc.as_deref().unwrap(), "");
+        // 2 records
+        assert_eq!(rs0.records.len(), 2);
+        // 2 fields on records
+        assert_eq!(rs0.records[0].len(), 2);
+        assert_eq!(rs0.records[1].len(), 2);
+
+        // check record[0]
+        // contains fields
+        assert_eq!(rs0.records[0].contains_key("Id"), true);
+        assert_eq!(rs0.records[0].contains_key("Title"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(rs0.records[0].is_vec("Id"), false);
+        assert_eq!(rs0.records[0].is_vec("Title"), false);
+        // Id is an Int type
+        match &rs0.records[0].get("Id").unwrap() {
+            Value::Int(theint) => {
+                // value matches - this is not a comment
+                assert_eq!(*theint, 10);
+            }
+            _ => { assert!(false); }
+        }
+        // Title is a Line type
+        match &rs0.records[0].get("Title").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "Notebook (big)".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+
+        // check record[1]
+        // contains fields
+        assert_eq!(rs0.records[1].contains_key("Id"), true);
+        assert_eq!(rs0.records[1].contains_key("Title"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(rs0.records[1].is_vec("Id"), false);
+        assert_eq!(rs0.records[1].is_vec("Title"), false);
+        // Id is an Int type
+        match &rs0.records[1].get("Id").unwrap() {
+            Value::Int(theint) => {
+                // value matches - this is not a comment
+                assert_eq!(*theint, 11);
+            }
+            _ => { assert!(false); }
+        }
+        // Title is a Line type
+        match &rs0.records[1].get("Title").unwrap() {
+            Value::Line(thestr) => {
+                // value matches - this is not a comment
+                assert_eq!(*thestr, "Fountain Pen".to_owned());
+            }
+            _ => { assert!(false); }
+        }
+    }
 }
