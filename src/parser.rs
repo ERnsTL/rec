@@ -82,15 +82,17 @@ impl Parser {
             // current_recordset is already 0
         }
 
-        self.inside_record_descriptor = true;
+        if !self.inside_record_descriptor {
+            self.inside_record_descriptor = true;
+            if self.have_something {
+                // add additional recordset
+                self.db.recordsets.push(RecordSet::default());
+                self.current_recordset += 1;
+            }
+        }
         match key {
             "rec" => {
                 self.record_descriptor_has_rec = true;
-                if self.have_something {
-                    // add additional recordset
-                    self.db.recordsets.push(RecordSet::default());
-                    self.current_recordset += 1;
-                }
                 let rectype = args.get(0).ok_or("expected rec type")?;  //TODO optimize possible allocation - compare performance with assign, then check the .rectype value since most DBs are expected to be compliant
                 match RECTYPE_RX.is_match(rectype) {
                     true => self.db.recordsets[self.current_recordset].rectype = Some(rectype.to_string()),
