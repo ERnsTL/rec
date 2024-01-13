@@ -113,7 +113,9 @@ impl Parser {
                 }
             }
 
-            key => todo!("{}", key),
+            key => {
+                return Err(format!("unexpected special field {}", key).into()); //TODO optimize
+            },
         };
 
         Ok(())
