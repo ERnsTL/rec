@@ -2606,6 +2606,275 @@ Title: Fountain Pen
 
     /// see manual 2.4.4 Record Sets Properties
     #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_rec() {
+        const TEXT: &str = "%rec: Item
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_mandatory() {
+        const TEXT: &str = "%rec: Item
+%mandatory: Title
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_allowed() {
+        const TEXT: &str = "%rec: Item
+%allowed: Title
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_prohibit() {
+        const TEXT: &str = "%rec: Item
+%prohibit: Title
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_unique() {
+        const TEXT: &str = "%rec: Item
+%unique: Id
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_key() {
+        const TEXT: &str = "%rec: Item
+%key: Id
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_doc() {
+        const TEXT: &str = "%rec: Item
+%doc: Some nice doc string
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_typedef() {
+        const TEXT: &str = "%rec: Item
+%typedef: Id_t int
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_type() {
+        const TEXT: &str = "%rec: Item
+%typedef: Id_t int
+%type: Id Id_t
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_auto() {
+        const TEXT: &str = "%rec: Item
+%key: Id
+%auto: Id
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_sort() {
+        const TEXT: &str = "%rec: Item
+%type: Date date
+%sort: Date
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_size() {
+        const TEXT: &str = "%rec: Item
+%size: <= 100
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_constraint() {
+        const TEXT: &str = "%rec: Item
+%type: Start,End date
+%constraint: Start << End
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_confidential() {
+        const TEXT: &str = "%rec: Account
+%confidential: Password
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
     fn parser_2_4_4_unknown_special_fields() {
         const TEXT: &str = "%rec: Item
 %type: Id int
