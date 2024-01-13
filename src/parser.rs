@@ -2779,8 +2779,7 @@ Title: Fountain Pen
     #[test]
     fn parser_2_4_4_special_fields_defined_in_the_recutils_format_type() {
         const TEXT: &str = "%rec: Item
-%typedef: Id_t int
-%type: Id Id_t
+%type: Id int
 ";
         // should return Ok
         match DB::new(TEXT) {
