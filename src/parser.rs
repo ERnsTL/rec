@@ -2415,29 +2415,7 @@ Title: Fountain Pen
 
     /// see manual 2.4.4 Record Sets Properties
     #[test]
-    fn parser_2_4_4_unknown_special_fields() {
-        const TEXT: &str = "%rec: Item
-%type: Id int
-%mandatory: Title
-%special: SomethingInvalid
-%another: SpecialInvalid
-";
-        // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
-        }
-    }
-
-    /// see manual 2.4.4 Record Sets Properties
-    #[test]
-    fn parser_2_4_4_every_recordset_must_contain_exactly_one_field_rec1() {
+    fn parser_2_4_4_every_recordset_must_contain_exactly_one_special_field_rec1() {
         const TEXT: &str = "%type: Id int
 %mandatory: Title
 
@@ -2458,7 +2436,7 @@ Title: Notebook (big)
     }
 
     /// see manual 2.4.4 Record Sets Properties
-    fn parser_2_4_4_every_recordset_must_contain_exactly_one_field_rec2() {
+    fn parser_2_4_4_every_recordset_must_contain_exactly_one_special_field_rec2() {
         const TEXT: &str = "%rec: Item
 %type: Id int
 %rec: Item
@@ -2466,6 +2444,28 @@ Title: Notebook (big)
 
 Id: 10
 Title: Notebook (big)
+";
+        // should return Err
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_unknown_special_fields() {
+        const TEXT: &str = "%rec: Item
+%type: Id int
+%mandatory: Title
+%special: SomethingInvalid
+%another: SpecialInvalid
 ";
         // should return Err
         match DB::new(TEXT) {
