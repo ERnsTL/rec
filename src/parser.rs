@@ -124,11 +124,13 @@ impl Parser {
             }
             "type" => {
                 let field_name = args.get(0).ok_or("expected field name")?.to_string();
-                let kind = parse_type(args)?;
-
-                let meta = self.db.recordsets[self.current_recordset].types.entry(field_name).or_default();
-
-                meta.kind = kind;
+                match parse_type(args) {
+                    Ok(kind) => {
+                        let meta = self.db.recordsets[self.current_recordset].types.entry(field_name).or_default();
+                        meta.kind = kind;
+                    },
+                    Err(err) => return Err(format!("parsing type: {}", err).into()),
+                }
             }
             "auto" => {
                 //TODO implement
