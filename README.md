@@ -42,8 +42,15 @@ The following examples and definitions are covered by unit tests, listed by chap
     * 3.5.4 SEX Evaluation:  TODO
   * 3.6 Field Expressions:  TODO
   * 3.7 Sorted Output:  TODO
-* 4 editing records section TODO expand
-* 5 editing fields section TODO expand
+* 4 Editing Records: TODO check for compliance requirements in chapter front matter.
+  * 4.1 Inserting Records:  TODO check for compliance requirements in section front matter.
+    * 4.1.1 Adding Records With recins:  TODO
+    * 4.1.2 Replacing Records With recins:  TODO
+    * 4.1.3 Adding Anonymous Records:  TODO
+  * 4.2 Deleting Records:  TODO
+  * 4.3 Sorting Records:  TODO
+* 5 editing fields TODO check for compliance requirements in chapter front matter.
+  * TODO
 * 6 Field Types:  Nothing to comply with.
   * 6.1 Declaring Types:  TODO
   * 6.2 Types and Fields:  TODO
