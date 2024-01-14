@@ -120,7 +120,16 @@ impl Parser {
             "key" => self.db.recordsets[self.current_recordset].primary_key = Some(args.get(0).ok_or("expected key")?.to_string()),
             "doc" => self.db.recordsets[self.current_recordset].doc = Some(args.join(" ")),
             "typedef" => {
-                //TODO implement
+                // typedef is parsed the same way as type, but the typedef is like a declaration and does not have to be used
+                //TODO does typedef really have the same fields as type? TODO optimize code duplication
+                let field_name = args.get(0).ok_or("expected field name")?.to_string();
+                match parse_type(args) {
+                    Ok(kind) => {
+                        let meta = self.db.recordsets[self.current_recordset].typedefs.entry(field_name).or_default();
+                        meta.kind = kind;
+                    },
+                    Err(err) => return Err(format!("parsing typedef: {}", err).into()),
+                }
             }
             "type" => {
                 let field_name = args.get(0).ok_or("expected field name")?.to_string();
