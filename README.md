@@ -49,8 +49,11 @@ The following examples and definitions are covered by unit tests, listed by chap
     * 4.1.3 Adding Anonymous Records:  TODO
   * 4.2 Deleting Records:  TODO
   * 4.3 Sorting Records:  TODO
-* 5 editing fields TODO check for compliance requirements in chapter front matter.
-  * TODO
+* 5 Editing Fields:  TODO check for compliance requirements in chapter front matter.
+  * 5.1 Adding Fields:  TODO
+  * 5.2 Setting Fields:  TODO
+  * 5.3 Deleting Fields:  TODO
+  * 5.4 Renaming Fields:  TODO
 * 6 Field Types:  Nothing to comply with.
   * 6.1 Declaring Types:  TODO
   * 6.2 Types and Fields:  TODO
