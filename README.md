@@ -55,14 +55,48 @@ The following examples and definitions are covered by unit tests, listed by chap
 * 10 Grouping and Aggregates:  Nothing to comply with.
   * 10.1 Grouping Records:  TODO
   * 10.2 Aggregate Functions:  TODO
-* 11 queries which join records:  TODO expand
-* 12 auto-generated fields:  TODO expand
-* 13 encryption:  TODO expand
-* 14 generating imports:  TODO expand
-* 15 interoperability:  TODO expand
-* 17 invoking the utilities:  TODO cover features and switches for the utilities
-* 18 regular expressions:  TODO expand
-* 19 date input formats:  TODO expand
+* 11 Queries which Join Records:  TODO check for compliance requirements in chapter front matter.
+  * 11.1 Foreign Keys:  TODO
+  * 11.2 Joining Records:  TODO
+* 12 auto-generated fields:  TODO check for compliance requirements in chapter front matter.
+  * 12.1 Counters:  TODO
+  * 12.2 Unique Identifiers:  TODO
+  * 12.3 Time-Stamps:  TODO
+* 13 encryption:  TODO check for compliance requirements in chapter front matter.
+  * 13.1 Confidential Fields:  TODO
+  * 13.2 Encrypting Files:  TODO
+  * 13.3 Decrypting Data:  TODO
+* 14 Generating Reports:  TODO check for compliance requirements in chapter front matter.
+  * 14.1 Templates:  TODO
+* 15 Interoperability:  Nothing to comply with.
+  * 15.1 CSV Files:  TODO
+  * 15.2 Importing MDB Files:  TODO
+* 16 Bash Builtins:  TODO check for compliance requirements in chapter front matter.
+  * 16.1 readrec:  TODO
+* 17 Invoking the Utilities:  TODO check for compliance requirements in chapter front matter (common options).
+  * 17.1 Invoking recinf:  TODO
+  * 17.2 Invoking recsel:  TODO
+  * 17.3 Invoking recins:  TODO
+  * 17.4 Invoking recdel:  TODO
+  * 17.5 Invoking recset:  TODO
+  * 17.6 Invoking recfix:  TODO
+  * 17.7 Invoking recfmt:  TODO
+  * 17.8 Invoking csv2rec:  TODO
+  * 17.9 Invoking rec2csv:  TODO
+  * 17.10 Invoking mdb2rec:  TODO
+* 18 Regular Expressions:  TODO
+* 19 Date input formats:  TODO check for compliance requirements in chapter front matter.
+  * 19.1 General date syntax:  TODO
+  * 19.2 Calendar date items:  TODO
+  * 19.3 Time of day items:  TODO
+  * 19.4 Time zone items:  TODO
+  * 19.5 Combined date and time of day items:  TODO
+  * 19.6 Day of week items:  TODO
+  * 19.7 Relative items in date strings:  TODO
+  * 19.8 Pure numbers in date strings:  TODO
+  * 19.9 Seconds since the Epoch:  TODO
+  * 19.10 Specifying time zone rules:  TODO
+  * 19.11 Authors of parse_datetime:  TODO
 
 ## Implementation notes
 
