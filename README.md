@@ -126,6 +126,7 @@ The following examples and definitions are covered by unit tests, listed by chap
 ## Feedbacks on the manual
 
 * 2.4.4 has inconsistent ordering in the listing of %mandatory, %allowed and %prohibited in the blockquote-styled text vs. ordering of the links in the description.
+* 3.5.1 sub-section name is inconsistently cased
 * 19 has non-uppercase name
 
 ## Future
