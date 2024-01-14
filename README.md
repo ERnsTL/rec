@@ -30,7 +30,18 @@ The following examples and definitions are covered by unit tests, listed by chap
     * 2.4.2 Naming Record Types:  Allowed characters in record types.
     * 2.4.3 Documenting Records:  Recordset documentation field, Recordset documentation character restrictions, Two record sets with rec and doc fields example. TODO are multiple %doc per %rec allowed?
     * 2.4.4 Record Sets Properties:  Special fields example for mandatory, Special fields start with "%", Non-special fields in a record descriptor have no effect, Every recordset must contain exactly one special field rec, It is not mandated that the rec special field must occupy the first position, Special fields defined in the recutils format:  %rec, %mandatory, %allowed, %prohibit, %unique, %key, %doc, %typedef and %type, %auto, %sort, %size, %constraint, %confidential. Unknown special fields (TODO how does GNU recutils behave - warning or error?).
-* 3 querying recfiles section TODO expand
+* 3 Querying Recfiles:  TODO check for compliance requirements in chapter front matter.
+  * 3.1 Simple Selections:  TODO
+  * 3.2 Selecting by Type:  TODO
+  * 3.3 Selecting by Position:  TODO
+  * 3.4 Random Records:  TODO
+  * 3.5 Selection Expressions:  TODO check for compliance requirements in section front matter.
+    * 3.5.1 Selecting by predicate:  TODO
+    * 3.5.2 SEX Operands:  TODO
+    * 3.5.3 SEX Operators:  TODO
+    * 3.5.4 SEX Evaluation:  TODO
+  * 3.6 Field Expressions:  TODO
+  * 3.7 Sorted Output:  TODO
 * 4 editing records section TODO expand
 * 5 editing fields section TODO expand
 * 6 Field Types:  Nothing to comply with.
