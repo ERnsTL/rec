@@ -137,6 +137,7 @@ pub struct RecordSet {
     pub sort_field: Option<String>,
     pub doc: Option<String>,
     pub types: HashMap<Key, Meta>,
+    pub typedefs: HashMap<Key, Meta>,   //TODO able to merge with types?
     pub fields: Vec<Key>,
     records: Vec<Record>,
 }
