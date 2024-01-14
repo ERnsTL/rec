@@ -3031,4 +3031,137 @@ Title: Fountain Pen
         // 0 records
         assert_eq!(rs0.records.len(), 0);
     }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_type_names_are_identifiers_having_the_following_syntax1() {
+        const TEXT: &str = "%rec: Item
+%typedef: age_t int
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_type_names_are_identifiers_having_the_following_syntax2() {
+        const TEXT: &str = "%rec: Item
+%typedef: age-t int
+";
+        // should return Err
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_type_names_are_identifiers_having_the_following_syntax3() {
+        const TEXT: &str = "%rec: Item
+%typedef: 9age_t int
+";
+        // should return Err
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_type_names_are_identifiers_having_the_following_syntax4() {
+        const TEXT: &str = "%rec: Item
+%typedef: age_t9 int
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_type_names_are_identifiers_having_the_following_syntax5() {
+        const TEXT: &str = "%rec: Item
+%typedef: _Age_t int
+";
+        // should return Err
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_type_names_are_identifiers_having_the_following_syntax6() {
+        const TEXT: &str = "%rec: Item
+%typedef: Ag👎e_t int
+";
+        // should return Err
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_type_names_are_identifiers_having_the_following_syntax7() {
+        const TEXT: &str = "%rec: Item
+%typedef: Ageäöü_t int
+";
+        // should return Err
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
 }
