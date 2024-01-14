@@ -51,11 +51,10 @@ The following examples and definitions are covered by unit tests, listed by chap
 * 8 Checking Recfiles:  TODO add recfix command
   * 8.1 Syntactical Errors:  TODO
   * 8.2 Semantic Errors:  TODO
-* 9 remote descriptors:  TODO use actual chapter numbering from manual
-  * "any schema supported by libcurl"
-  * url reference
-  * file reference
-* 10 grouping and aggregates:  TODO expand
+* 9 Remote Descriptors:  TODO expand requirements - "any schema supported by libcurl", url reference, file reference
+* 10 Grouping and Aggregates:  Nothing to comply with.
+  * 10.1 Grouping Records:  TODO
+  * 10.2 Aggregate Functions:  TODO
 * 11 queries which join records:  TODO expand
 * 12 auto-generated fields:  TODO expand
 * 13 encryption:  TODO expand
