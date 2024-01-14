@@ -2976,4 +2976,59 @@ Title: Fountain Pen
         // 0 records
         assert_eq!(rs0.records.len(), 0);
     }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_define_age_t_as_numbers_in_the_range_0_to_120() {
+        const TEXT: &str = "%rec: Item
+%typedef: Age_t range 0 120
+";
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+
+        // number of recordsets
+        assert_eq!(db.recordsets.len(), 1);
+        // prepare recordsets
+        let rs0 = &db.recordsets[0];
+
+        // check recordset[0]
+
+        // typed recordset
+        assert!(rs0.rectype.is_some());
+        // type of recordset
+        assert_eq!(rs0.rectype.as_deref().unwrap(), "Item");
+        // recordset types
+        assert_eq!(rs0.types.len(), 0);
+        // recordset typedefs
+        assert_eq!(rs0.typedefs.len(), 1);
+        // type of fields and constraints
+        // typedef Test_t
+        if let Some(thetypedef) = rs0.typedefs.get("Age_t") {
+            // check for type of field
+            //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
+            match &thetypedef.kind {
+                Kind::Range(min, max) => {
+                    // this is OK
+                    assert_eq!(*min, 0);
+                    assert_eq!(*max, 120)
+                }
+                _ => {
+                    // this is not OK
+                    assert!(false);
+                }
+            }
+            // check for uniqueness constraint
+            assert_eq!(&thetypedef.unique, &false);
+            // check for a mandatory constraint
+            assert!(&thetypedef.constraint.is_none());
+        } else {
+            assert!(false);
+        }
+        // check documentation field
+        assert!(rs0.doc.is_none());
+        // value of documentation field
+        //assert_eq!(rs0.doc.as_deref().unwrap(), "");
+        // 0 records
+        assert_eq!(rs0.records.len(), 0);
+    }
 }
