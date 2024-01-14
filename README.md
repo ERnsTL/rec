@@ -68,6 +68,11 @@ The following examples and definitions are covered by unit tests, listed by chap
 
 * The record descriptor special field "prohibit" is correct as per manual and GNU recutils source code, even though it is called "prohibited fields" in the manual and the special field for allowed fields is called "allowed". This is an inconsistency in the file format. It would be possible to allow %prohibited in this implementation, but it would error on GNU recutils.
 
+## Feedbacks on the manual
+
+* 2.4.4 has inconsistent ordering in the listing of %mandatory, %allowed and %prohibited in the blockquote-styled text vs. ordering of the links in the description.
+* 19 has non-uppercase name
+
 ## Future
 
 * TODO compatibility and compliance with v1.9 from 2022
