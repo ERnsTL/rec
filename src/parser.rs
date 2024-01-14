@@ -255,12 +255,12 @@ fn parse_value(kind: &Kind, val: &str) -> Result<Value, Err> {
 fn parse_type(args: Vec<&str>) -> Result<Kind, Err> {
     use Kind::*;
 
-    let &tt = args.get(1).ok_or("expected field name")?;
-
-    if !FIELD_RX.is_match(&tt) {
-        return Err(format!("invalid field name: {}", tt).into());
+    let &type_name = args.get(0).ok_or("expected type name")?;
+    if !RECTYPE_RX.is_match(&type_name) {
+        return Err(format!("invalid type name: {}", type_name).into());
     }
 
+    let &tt = args.get(1).ok_or("expected type")?;
     Ok(match tt {
         "line" => Line,
         "int" => Int,
