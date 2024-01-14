@@ -33,30 +33,21 @@ The following examples and definitions are covered by unit tests, listed by chap
 * 3 querying recfiles section TODO expand
 * 4 editing records section TODO expand
 * 5 editing fields section TODO expand
-* 6 field types:  TODO use actual chapter numbering from manual
-  * anonymous fields, named fields
-  * int field type
-  * int range
-  * int MIN, MAX
-  * hexadecimal numbers
-  * real numbers
-  * size string in int, hexadecimal size, octal size
-  * regexp string
-  * enumerated field
-  * enum comments
-  * boolean field yes/no, 0/1, true/false
-  * date field type, details in chapter 19
-  * other: email
-  * other: field
-  * other: uuid
-  * other: viz resp. foreign key
-* 7 constraints on record sets:  TODO use actual chapter numbering from manual
-  * mandatory fields
-  * prohibited fields
-  * allowed fields
-  * keys and unique fields
-  * size constraint
-  * arbitrary constraint
+* 6 Field Types:  Nothing to comply with.
+  * 6.1 Declaring Types:  TODO
+  * 6.2 Types and Fields:  TODO
+  * 6.3 Scalar Field Types:  TODO
+  * 6.4 String Field Types:  TODO
+  * 6.5 Enumerated Field Types:  TODO
+  * 6.6 Date and Time Types:  TODO
+  * 6.7 Other Field Types:  TODO
+* 7 Constraints on Record Sets:  Nothing to comply with.
+  * 7.1 Mandatory Fields:  TODO
+  * 7.2 Prohibited Fields:  TODO
+  * 7.3 Allowed Fields:  TODO
+  * 7.4 Keys and Unique Fields:  TODO
+  * 7.5 Size Constraints:  TODO
+  * 7.6 Arbitrary Constraints:  TODO
 * 8 checking recfiles:  TODO use actual chapter numbering from manual
   * syntactical errors
   * semantic errors
