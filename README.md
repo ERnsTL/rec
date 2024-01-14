@@ -48,9 +48,9 @@ The following examples and definitions are covered by unit tests, listed by chap
   * 7.4 Keys and Unique Fields:  TODO
   * 7.5 Size Constraints:  TODO
   * 7.6 Arbitrary Constraints:  TODO
-* 8 checking recfiles:  TODO use actual chapter numbering from manual
-  * syntactical errors
-  * semantic errors
+* 8 Checking Recfiles:  TODO add recfix command
+  * 8.1 Syntactical Errors:  TODO
+  * 8.2 Semantic Errors:  TODO
 * 9 remote descriptors:  TODO use actual chapter numbering from manual
   * "any schema supported by libcurl"
   * url reference
