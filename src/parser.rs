@@ -2916,7 +2916,7 @@ Title: Fountain Pen
 
     /// see manual 6.1 Declaring Types
     #[test]
-    fn parser_6_1_the_typedef_syntax_is() {
+    fn parser_6_1_the_typedef_syntax() {
         const TEXT: &str = "%rec: Item
 %typedef: Test_t int
 ";
