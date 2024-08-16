@@ -47,10 +47,13 @@ pub struct Meta {
 }
 
 #[derive(Debug)]
-enum Constraint {
+pub(crate) enum Constraint {
     Mandatory,
     Allowed,
     Prohibited,
+    Arbitrary(Vec<String>), //TODO change to a query or query builder, because an arbitrary constraint is a query which the dataset must fulfull -
+    // but QueryBuilder wants new(RecordSet) which would be a circluar reference with current method signature -
+    // not sure why it needs recordset in new() instead of query(RecordSet)
 }
 
 impl FromStr for Constraint {
