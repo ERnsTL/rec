@@ -2864,7 +2864,28 @@ Title: Fountain Pen
 
     /// see manual 2.4.4 Record Sets Properties
     #[test]
-    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_constraint() {
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_constraint1() {
+        const TEXT: &str = "%rec: Item
+%type: Start date
+%type: End date
+%constraint: Start << End
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
+
+    /// see manual 2.4.4 Record Sets Properties
+    #[test]
+    fn parser_2_4_4_special_fields_defined_in_the_recutils_format_constraint2() {
         const TEXT: &str = "%rec: Item
 %type: Start,End date
 %constraint: Start << End
