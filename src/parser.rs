@@ -166,7 +166,11 @@ impl Parser {
                 }
             }
             "constraint" => {
-                //TODO implement
+                if let Ok(constraint) = crate::Constraint::from_args(args) {
+                    self.db.recordsets[self.current_recordset].constraints.push(constraint);
+                } else {
+                    return Err("invalid constraint".into());
+                }
             }
             "confidential" => {
                 for field in args {
