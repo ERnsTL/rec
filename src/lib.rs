@@ -140,6 +140,7 @@ pub struct RecordSet {
     pub types: HashMap<Key, Meta>,
     pub typedefs: HashMap<Key, Meta>,   //TODO able to merge with types?
     pub fields: Vec<Key>,
+    pub auto_fields: Option<Vec<Key>>,
     records: Vec<Record>,
 }
 
