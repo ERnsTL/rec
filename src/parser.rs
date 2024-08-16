@@ -977,10 +977,7 @@ A_Field:
     /// see manual 2.1 Fields
     #[test]
     fn parser_2_1_escaping_a_newline2() {
-        const TEXT: &str = "Foo:
-+ bar2
-+  bar3
-";  // NOTE: no space after "Foo:"
+        const TEXT: &str = "Foo:\n+ bar2\n+  bar3\n";  // NOTE: no space after "Foo:"
         // should return Ok
         let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
         let rs = &db.recordsets[0];
