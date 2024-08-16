@@ -142,7 +142,7 @@ impl Parser {
                 }
             }
             "auto" => {
-                //TODO implement
+                self.db.recordsets[self.current_recordset].auto_fields = Some(args.iter().map(|s| s.to_string()).collect());
             }
             "sort" => {
                 let field = args.get(0).ok_or("expected sort field")?.to_string();
