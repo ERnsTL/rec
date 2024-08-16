@@ -3191,4 +3191,25 @@ Title: Fountain Pen
             }
         }
     }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_a_type_can_be_declared_to_be_an_alias_for_another_type() {
+        const TEXT: &str = "%rec: Item
+%typedef: Id_t          int
+%typedef: Item_t        Id_t
+%typedef: Transaction_t Id_t
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
 }
