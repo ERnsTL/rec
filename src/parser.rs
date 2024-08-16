@@ -123,7 +123,7 @@ impl Parser {
                 // typedef is parsed the same way as type, but the typedef is like a declaration and does not have to be used
                 //TODO does typedef really have the same fields as type? TODO optimize code duplication
                 let type_name = args.get(0).ok_or("expected type name")?.to_string();
-                match parse_type(args) {
+                match self.parse_type(args) {
                     Ok(kind) => {
                         let meta = self.db.recordsets[self.current_recordset].typedefs.entry(type_name).or_default();
                         meta.kind = kind;
@@ -133,7 +133,7 @@ impl Parser {
             }
             "type" => {
                 let field_name = args.get(0).ok_or("expected field name")?.to_string();
-                match parse_type(args) {
+                match self.parse_type(args) {
                     Ok(kind) => {
                         let meta = self.db.recordsets[self.current_recordset].types.entry(field_name).or_default();
                         meta.kind = kind;
@@ -397,17 +397,19 @@ mod tests {
 
     #[test]
     fn parser_range() {
-        let kind = parse_type(vec!["field", "range", "MIN", "MAX"]).unwrap();
+        let p = Parser::new();
+
+        let kind = p.parse_type(vec!["field", "range", "MIN", "MAX"]).unwrap();
         assert!(matches!(kind, Kind::Range(isize::MIN, isize::MAX)));
 
-        let kind = parse_type(vec!["field", "range", "0", "15"]).unwrap();
+        let kind = p.parse_type(vec!["field", "range", "0", "15"]).unwrap();
         assert!(matches!(kind, Kind::Range(0, 15)));
 
-        let kind = parse_type(vec!["field", "range", "15"]).unwrap();
+        let kind = p.parse_type(vec!["field", "range", "15"]).unwrap();
         assert!(matches!(kind, Kind::Range(0, 15)));
 
         // Impossible range
-        assert!(parse_type(vec!["field", "range", "30", "15"]).is_err());
+        assert!(p.parse_type(vec!["field", "range", "30", "15"]).is_err());
     }
 
     #[test]
