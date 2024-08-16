@@ -151,6 +151,7 @@ pub struct RecordSet {
     pub fields: Vec<Key>,
     pub auto_fields: Option<Vec<Key>>,
     pub size: Option<(String, usize)>,  //TODO optimize operator as enum
+    pub constraints: Vec<Constraint>,   // only for arbitrary constraints
     records: Vec<Record>,
 }
 
