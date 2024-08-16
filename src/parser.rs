@@ -142,9 +142,6 @@ impl Parser {
                 }
             }
             "auto" => {
-                if self.db.recordsets[self.current_recordset].auto_fields.is_some() {
-                    return Err("only one %size field shall appear in a record descriptor".into());
-                }
                 self.db.recordsets[self.current_recordset].auto_fields = Some(args.iter().map(|s| s.to_string()).collect());
             }
             "sort" => {
@@ -152,7 +149,21 @@ impl Parser {
                 self.db.recordsets[self.current_recordset].sort_field = Some(field)
             }
             "size" => {
-                //TODO implement
+                if self.db.recordsets[self.current_recordset].size.is_some() {
+                    return Err("only one %size field shall appear in a record descriptor".into());
+                }
+                match args.len() {
+                    2 => {
+                        let operator = args.get(0).ok_or("expected operator string")?.to_string();
+                        let size = args.get(1).ok_or("expected size integer")?.parse().expect("failed to parse size as integer");
+                        self.db.recordsets[self.current_recordset].size = Some((operator, size));
+                    },
+                    1 => {
+                        let size = args.get(0).ok_or("expected size integer")?.parse().expect("failed to parse size as integer");
+                        self.db.recordsets[self.current_recordset].size = Some(('='.into(), size));
+                    },
+                    _ => return Err("%size field must have 1 or 2 arguments".into()),
+                }
             }
             "constraint" => {
                 //TODO implement
