@@ -319,7 +319,7 @@ fn parse_value(kind: &Kind, val: &str) -> Result<Value, Err> {
             "false" | "no" | "0" => Bool(false),
             _ => return Err(format!("unexpected boolean value: {}", val).into()),
         },
-        Kind::Date => todo!("date parsing"),
+        Kind::Date => unimplemented!("date parsing"),
         Kind::Email => {
             if !val.contains('@') {
                 // yes
