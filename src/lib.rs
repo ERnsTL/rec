@@ -141,6 +141,7 @@ pub struct RecordSet {
     pub typedefs: HashMap<Key, Meta>,   //TODO able to merge with types?
     pub fields: Vec<Key>,
     pub auto_fields: Option<Vec<Key>>,
+    pub size: Option<(String, usize)>,  //TODO optimize operator as enum
     records: Vec<Record>,
 }
 
