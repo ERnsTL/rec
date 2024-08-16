@@ -142,6 +142,9 @@ impl Parser {
                 }
             }
             "auto" => {
+                if self.db.recordsets[self.current_recordset].auto_fields.is_some() {
+                    return Err("only one %size field shall appear in a record descriptor".into());
+                }
                 self.db.recordsets[self.current_recordset].auto_fields = Some(args.iter().map(|s| s.to_string()).collect());
             }
             "sort" => {
