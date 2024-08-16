@@ -981,16 +981,29 @@ A_Field:
 + bar2
 +  bar3
 ";  // NOTE: no space after "Foo:"
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                // NOTE: should be accepted as GNU recutils accepts this
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
+        // should return Ok
+        let db = DB::new(TEXT).expect("DB::new() returned Err - should return Ok");
+        let rs = &db.recordsets[0];
+
+        // untyped recordset
+        assert!(rs.rectype.is_none());
+        // 1 records
+        assert_eq!(rs.records.len(), 1);
+        // 1 fields on that record
+        assert_eq!(rs.records[0].len(), 1);
+
+        // contains field "Foo"
+        assert_eq!(rs.records[0].contains_key("Foo"), true);
+        // fields are no multi-fields, but recognized as separate fields
+        assert_eq!(rs.records[0].is_vec("Foo"), false);
+        // Name is a Line type
+        match &rs.records[0].get("Foo").unwrap() {
+            Value::Line(thestr) => {
+                // value matches
+                // NOTE: GNU recutils also does not return the " " after "Foo:"
+                assert_eq!(*thestr, "bar2\n bar3".to_owned());
             }
+            _ => { assert!(false); }
         }
     }
 
