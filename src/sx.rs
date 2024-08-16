@@ -1,6 +1,5 @@
 use super::{Err, Record};
 use regex::Regex;
-use std::convert::{TryFrom, TryInto};
 use std::str::FromStr;
 use std::{cmp, iter};
 

@@ -4,7 +4,6 @@ use block_modes::block_padding::ZeroPadding;
 use block_modes::{BlockMode, Cbc};
 use crc::crc32;
 use rand_core::{OsRng, RngCore};
-use std::convert::TryInto;
 use std::error;
 use std::fmt;
 use std::str;

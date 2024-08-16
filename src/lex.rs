@@ -1,4 +1,4 @@
-use std::iter::{Iterator, Peekable};
+use std::iter::Peekable;
 
 #[derive(Debug, PartialEq)]
 pub(crate) enum Token {

@@ -337,6 +337,7 @@ fn parse_bound(v: &str) -> Result<isize, Err> {
         v => v.parse()?,
     })
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;
