@@ -81,6 +81,7 @@ pub enum Kind {
     Regexp(Regex),  //NOTE: does not implement PartialEq e.g. for assert_eq!, see https://github.com/rust-lang/regex/issues/178
     Viz(String),
     Enum(HashSet<String>),
+    Alias(String),    // used for typedefs referencing another type   //TODO optimize - also store the final type here as Kind?
 }
 
 impl Default for Kind {
