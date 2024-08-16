@@ -200,6 +200,93 @@ impl Parser {
         self.current_record = Some(rec);
         Ok(())
     }
+
+    fn parse_type(&self, args: Vec<&str>) -> Result<Kind, Err> {
+        use Kind::*;
+
+        let &type_name = args.get(0).ok_or("expected type name")?;
+        if !RECTYPE_RX.is_match(&type_name) {
+            return Err(format!("invalid type name: {}", type_name).into());
+        }
+
+        //TODO implement enumerated types like %type: Start,End date
+        let &tt = args.get(1).ok_or("expected type")?;
+        Ok(match tt {
+            "line" => Line,
+            "int" => Int,
+            "real" => Real,
+            "bool" => Bool,
+            "date" => Date,
+            "email" => Email,
+            "uuid" => UUID,
+            "range" => {
+                let from;
+                let to;
+
+                if args.len() > 3 {
+                    from = parse_bound(args.get(2).ok_or("expected start range index")?)?;
+                    to = parse_bound(args.get(3).ok_or("expected end range index")?)?;
+                } else {
+                    from = 0;
+                    to = parse_bound(args.get(2).ok_or("expected end range index")?)?;
+                }
+
+                if from > to {
+                    return Err("impossible range".into());
+                }
+
+                Kind::Range(from, to)
+            }
+            "regexp" => {
+                let rx = args
+                    .get(2)
+                    .ok_or("expected regexp definition as third field")?
+                    .strip_prefix("/")
+                    .ok_or("expected regexp to begin with slash")?
+                    .strip_suffix("/")
+                    .ok_or("expected regexp to end with slash")?;
+
+                let compiled = Regex::new(rx)?;
+                Regexp(compiled)
+            }
+            "viz" => {
+                let key = args
+                    .get(2)
+                    .ok_or("expected field reference as second field")?;
+
+                match FIELD_RX.is_match(key) {
+                    true => Kind::Viz(key.to_string()),
+                    false => return Err(format!("invalid viz value: {}", key).into()),
+                }
+            }
+            "enum" => {
+                if args.len() < 3 {
+                    return Err("expected at least one enum variant".into());
+                }
+
+                let mut variants = HashSet::with_capacity(args.len() - 2);
+
+                for v in args.iter().skip(2).map(|s| s.to_string()) {
+                    match ENUM_RX.is_match(&v) {
+                        true => variants.insert(v.to_lowercase()),
+                        false => return Err(format!("invalid enum value: {}", v).into()),
+                    };
+                }
+
+                Enum(variants)
+            }
+            type_name => {
+                // check for type alias
+                if self.db.recordsets[self.current_recordset].typedefs.contains_key(type_name) {
+                    // type alias
+                    return Ok(Kind::Alias(type_name.to_string()));
+                } else {
+                    // unknown
+                    return Err(format!("unknown type: {}", tt).into())
+                }
+            }
+        })
+    }
 }
 
 fn parse_value(kind: &Kind, val: &str) -> Result<Value, Err> {
@@ -249,84 +336,7 @@ fn parse_value(kind: &Kind, val: &str) -> Result<Value, Err> {
             }
             Enum(val.to_lowercase())
         }
-    })
-}
-
-fn parse_type(args: Vec<&str>) -> Result<Kind, Err> {
-    use Kind::*;
-
-    let &type_name = args.get(0).ok_or("expected type name")?;
-    if !RECTYPE_RX.is_match(&type_name) {
-        return Err(format!("invalid type name: {}", type_name).into());
-    }
-
-    //TODO implement enumerated types like %type: Start,End date
-    let &tt = args.get(1).ok_or("expected type")?;
-    Ok(match tt {
-        "line" => Line,
-        "int" => Int,
-        "real" => Real,
-        "bool" => Bool,
-        "date" => Date,
-        "email" => Email,
-        "uuid" => UUID,
-        "range" => {
-            let from;
-            let to;
-
-            if args.len() > 3 {
-                from = parse_bound(args.get(2).ok_or("expected start range index")?)?;
-                to = parse_bound(args.get(3).ok_or("expected end range index")?)?;
-            } else {
-                from = 0;
-                to = parse_bound(args.get(2).ok_or("expected end range index")?)?;
-            }
-
-            if from > to {
-                return Err("impossible range".into());
-            }
-
-            Kind::Range(from, to)
-        }
-        "regexp" => {
-            let rx = args
-                .get(2)
-                .ok_or("expected regexp definition as third field")?
-                .strip_prefix("/")
-                .ok_or("expected regexp to begin with slash")?
-                .strip_suffix("/")
-                .ok_or("expected regexp to end with slash")?;
-
-            let compiled = Regex::new(rx)?;
-            Regexp(compiled)
-        }
-        "viz" => {
-            let key = args
-                .get(2)
-                .ok_or("expected field reference as second field")?;
-
-            match FIELD_RX.is_match(key) {
-                true => Kind::Viz(key.to_string()),
-                false => return Err(format!("invalid viz value: {}", key).into()),
-            }
-        }
-        "enum" => {
-            if args.len() < 3 {
-                return Err("expected at least one enum variant".into());
-            }
-
-            let mut variants = HashSet::with_capacity(args.len() - 2);
-
-            for v in args.iter().skip(2).map(|s| s.to_string()) {
-                match ENUM_RX.is_match(&v) {
-                    true => variants.insert(v.to_lowercase()),
-                    false => return Err(format!("invalid enum value: {}", v).into()),
-                };
-            }
-
-            Enum(variants)
-        }
-        _ => return Err(format!("unknown type: {}", tt).into()),
+        Kind::Alias(_) => unreachable!("type alias values are not parsed"),
     })
 }
 
