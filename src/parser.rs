@@ -260,6 +260,7 @@ fn parse_type(args: Vec<&str>) -> Result<Kind, Err> {
         return Err(format!("invalid type name: {}", type_name).into());
     }
 
+    //TODO implement enumerated types like %type: Start,End date
     let &tt = args.get(1).ok_or("expected type")?;
     Ok(match tt {
         "line" => Line,
