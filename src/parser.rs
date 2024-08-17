@@ -74,6 +74,11 @@ impl Parser {
             self.db.recordsets[self.current_recordset].records.push(rec);   //TODO optimize same as above - indirections or indirect first and insert into a resolved records variable?
         }
 
+        // integrity check
+        if let Err(err) = self.integrity_check() {
+            return Err(err)
+        }
+
         Ok(self.db)
     }
 
