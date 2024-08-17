@@ -1,16 +1,18 @@
 # rec - Recfiles for Rust!
 
-Incomplete implementation for handling awesome file format called [recfile](https://www.gnu.org/software/recutils/manual/recutils.html).
-
-Supports parsing databases, sex'es, fields encryption and some basic queries. Also my first time writing parsers in Rust.
+Implementation for handling the awesome file format called [recfile](https://www.gnu.org/software/recutils/manual/recutils.html).
 
 ## Status
 
-Basically useful. Not recommended for production use at the moment. This is currently the library only. The command-line utilities are still missing.
+Basically useful. Not recommended for production use at the moment. Some features are still missing - supports parsing databases, sex'es, fields encryption and some basic queries.
 
-Tests for all examples mentioned in the manual are being added. During that, compatibility problems are revealed and fixed but a good part of the features are usable and compliant with GNU recutils.
+This is currently the library only. The command-line utilities are still missing. A server daemon allowing multi-user online queries without re-parsing the database for every request is still missing.
+
+Tests for all examples mentioned in the manual are being added. During that, compatibility problems are revealed and fixed as well as missing features added, but a good part of the features are usable and compliant with GNU recutils.
 
 API may change at any time at this stage.
+
+Algorithms and data types not yet optimized for performance. Internal structs could need a refactoring. The parser is not based on a parser framework like Nom nor a parser generator, but hand-written.
 
 ## Compatibility
 
