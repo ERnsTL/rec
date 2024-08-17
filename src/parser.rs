@@ -3309,8 +3309,9 @@ Title: Fountain Pen
     #[test]
     fn parser_6_1_complain_if_any_aliases_referencing_in_loop_directly_or_indirectly_in_type_declarations() {
         const TEXT: &str = "%rec: Item
-%typedef: Item_t        Id_t
-%typedef: Transaction_t Id_t
+%typedef: A_t B_t
+%typedef: B_t C_t
+%typedef: C_t A_t
 ";
         // should return Err
         match DB::new(TEXT) {
