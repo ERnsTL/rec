@@ -3387,4 +3387,28 @@ Title: Fountain Pen
             }
         }
     }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_the_scope_of_a_type_is_the_record_descriptor_where_it_is_defined() {
+        const TEXT: &str = "%rec: Item
+%typedef: Id_t          int
+%typedef: Item_t        Id_t
+%typedef: Transaction_t Id_t
+
+%rec: Transaction
+%typedef: Crossref      Id_t
+";
+        // should return Err
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
 }
