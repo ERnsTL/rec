@@ -3263,4 +3263,25 @@ Title: Fountain Pen
             }
         }
     }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_a_type_definition_can_forward_reference_another_type() {
+        const TEXT: &str = "%rec: Item
+%typedef: Item_t        Id_t
+%typedef: Transaction_t Id_t
+%typedef: Id_t          int
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
 }
