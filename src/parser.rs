@@ -3242,4 +3242,25 @@ Title: Fountain Pen
             }
         }
     }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_the_order_of_the_typedef_fields_is_not_relevant() {
+        const TEXT: &str = "%rec: Item
+%typedef: Id_t          int
+%typedef: Transaction_t Id_t
+%typedef: Item_t        Id_t
+";
+        // should return Ok
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // that is OK, should return Ok
+                assert!(true);
+            },
+            Err(_) => {
+                // not good, should not return Err
+                assert!(false);
+            }
+        }
+    }
 }
