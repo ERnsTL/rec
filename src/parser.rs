@@ -361,6 +361,10 @@ impl Parser {
             }
         }
 
+        //TODO add check for %size field - see manual 2.4.4 Record Sets Properties
+
+        //TODO add check for %range field - see manual 2.4.4 Record Sets Properties
+
         Ok(())
     }
 }

@@ -147,7 +147,7 @@ pub struct RecordSet {
     pub sort_field: Option<String>,
     pub doc: Option<String>,
     pub types: HashMap<Key, Meta>,
-    pub typedefs: HashMap<Key, Meta>,   //TODO able to merge with types?
+    pub typedefs: HashMap<Key, Meta>,   //TODO able to merge with types?    //TODO check if typedef really needs all the attributes of Meta which is used for parsing %type
     pub fields: Vec<Key>,
     pub auto_fields: Option<Vec<Key>>,
     pub size: Option<(String, usize)>,  //TODO optimize operator as enum
