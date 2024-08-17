@@ -10,6 +10,8 @@ This is currently the library only. The command-line utilities are still missing
 
 Tests for all examples mentioned in the manual are currently being added. During that, compatibility problems are revealed and fixed as well as missing features added, but a good part of the features are usable and compliant with GNU recutils.
 
+__Progress__:  37 sections to go (bold to-do markers) for next release (0.2.0).
+
 API may change at any time at this stage.
 
 Algorithms and data types not yet optimized for performance. Internal structs could need a refactoring. The parser is not based on a parser framework like Nom nor a parser generator, but hand-written.
@@ -59,21 +61,21 @@ The following examples and definitions are covered by unit tests, listed by chap
 * 6 Field Types:  Nothing to comply with.
   * 6.1 Declaring Types:  The typedef syntax, Define Age_t as numbers in the range 0 to 120, Type names are identifiers having the following syntax, A type can be declared to be an alias for another type, The order of the %typedef fields is not relevant, a type definition can forward-reference another type, complain if undefined types are referenced, complain if any aliases referencing in loop directly or indirectly in type declarations, The scope of a type is the record descriptor where it is defined.
   * 6.2 Types and Fields:  TODO field_list is a list of field names separated by commas, TODO type_name_or_description can be either a type name which has been previously declared using %typedef, or a type description; TODO Anonymous types can be specified by writing a type description instead of a type name.
-  * 6.3 Scalar Field Types:  TODO
-  * 6.4 String Field Types:  TODO
-  * 6.5 Enumerated Field Types:  TODO
-  * 6.6 Date and Time Types:  TODO
-  * 6.7 Other Field Types:  TODO
+  * 6.3 Scalar Field Types:  **TODO**
+  * 6.4 String Field Types:  **TODO**
+  * 6.5 Enumerated Field Types:  **TODO**
+  * 6.6 Date and Time Types:  **TODO**
+  * 6.7 Other Field Types:  **TODO**
 * 7 Constraints on Record Sets:  Nothing to comply with.
-  * 7.1 Mandatory Fields:  TODO
-  * 7.2 Prohibited Fields:  TODO
-  * 7.3 Allowed Fields:  TODO
-  * 7.4 Keys and Unique Fields:  TODO
-  * 7.5 Size Constraints:  TODO
-  * 7.6 Arbitrary Constraints:  TODO
+  * 7.1 Mandatory Fields:  **TODO**
+  * 7.2 Prohibited Fields:  **TODO**
+  * 7.3 Allowed Fields:  **TODO**
+  * 7.4 Keys and Unique Fields:  **TODO**
+  * 7.5 Size Constraints:  **TODO**
+  * 7.6 Arbitrary Constraints:  **TODO**
 * 8 Checking Recfiles:  TODO add recfix command
-  * 8.1 Syntactical Errors:  TODO
-  * 8.2 Semantic Errors:  TODO
+  * 8.1 Syntactical Errors:  **TODO**
+  * 8.2 Semantic Errors:  **TODO**
 * 9 Remote Descriptors:  TODO expand requirements - "any schema supported by libcurl", url reference, file reference
 * 10 Grouping and Aggregates:  Nothing to comply with.
   * 10.1 Grouping Records:  TODO
@@ -81,16 +83,16 @@ The following examples and definitions are covered by unit tests, listed by chap
 * 11 Queries which Join Records:  TODO check for compliance requirements in chapter front matter.
   * 11.1 Foreign Keys:  TODO
   * 11.2 Joining Records:  TODO
-* 12 auto-generated fields:  TODO check for compliance requirements in chapter front matter.
-  * 12.1 Counters:  TODO
-  * 12.2 Unique Identifiers:  TODO
-  * 12.3 Time-Stamps:  TODO
-* 13 encryption:  TODO check for compliance requirements in chapter front matter.
-  * 13.1 Confidential Fields:  TODO
-  * 13.2 Encrypting Files:  TODO
-  * 13.3 Decrypting Data:  TODO
-* 14 Generating Reports:  TODO check for compliance requirements in chapter front matter.
-  * 14.1 Templates:  TODO
+* 12 auto-generated fields:  **TODO** check for compliance requirements in chapter front matter.
+  * 12.1 Counters:  **TODO**
+  * 12.2 Unique Identifiers:  **TODO**
+  * 12.3 Time-Stamps:  **TODO**
+* 13 encryption:  **TODO** check for compliance requirements in chapter front matter.
+  * 13.1 Confidential Fields:  **TODO**
+  * 13.2 Encrypting Files:  **TODO**
+  * 13.3 Decrypting Data:  **TODO**
+* 14 Generating Reports:  **TODO** check for compliance requirements in chapter front matter.
+  * 14.1 Templates:  **TODO**
 * 15 Interoperability:  Nothing to comply with.
   * 15.1 CSV Files:  TODO
   * 15.2 Importing MDB Files:  TODO
@@ -107,19 +109,19 @@ The following examples and definitions are covered by unit tests, listed by chap
   * 17.8 Invoking csv2rec:  TODO
   * 17.9 Invoking rec2csv:  TODO
   * 17.10 Invoking mdb2rec:  TODO
-* 18 Regular Expressions:  TODO
-* 19 Date input formats:  TODO check for compliance requirements in chapter front matter.
-  * 19.1 General date syntax:  TODO
-  * 19.2 Calendar date items:  TODO
-  * 19.3 Time of day items:  TODO
-  * 19.4 Time zone items:  TODO
-  * 19.5 Combined date and time of day items:  TODO
-  * 19.6 Day of week items:  TODO
-  * 19.7 Relative items in date strings:  TODO
-  * 19.8 Pure numbers in date strings:  TODO
-  * 19.9 Seconds since the Epoch:  TODO
-  * 19.10 Specifying time zone rules:  TODO
-  * 19.11 Authors of parse_datetime:  TODO
+* 18 Regular Expressions:  **TODO**
+* 19 Date input formats:  **TODO** check for compliance requirements in chapter front matter.
+  * 19.1 General date syntax:  **TODO**
+  * 19.2 Calendar date items:  **TODO**
+  * 19.3 Time of day items:  **TODO**
+  * 19.4 Time zone items:  **TODO**
+  * 19.5 Combined date and time of day items:  **TODO**
+  * 19.6 Day of week items:  **TODO**
+  * 19.7 Relative items in date strings:  **TODO**
+  * 19.8 Pure numbers in date strings:  **TODO**
+  * 19.9 Seconds since the Epoch:  **TODO**
+  * 19.10 Specifying time zone rules:  **TODO**
+  * 19.11 Authors of parse_datetime:  **TODO**
 
 ## Implementation notes
 
