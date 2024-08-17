@@ -323,6 +323,29 @@ impl Parser {
                     _ => {}
                 }
             }
+            // check for reference resp. alias loop
+            // NOTE: this is done in separate loop in order to have full coverage that no unknown types are referenced
+            //TODO optimize - find way to do in one pass and still be correct
+            // NOTE: loop is detected if target type is in list of already visited typedefs
+            for (field_name, typedef) in recordset.typedefs.iter() {
+                // check type aliases resp. references
+                match &typedef.kind {
+                    Kind::Alias(target_type_name) => {
+
+                        let mut from_list_reached: Vec<&String> = vec![];
+                        while {
+                            if from_list_reached.contains(&target_type_name) {
+                                // loop
+                                return Err(format!("%typedef alias loop detected in %typedef alias field {} referencing {}", field_name, target_type_name).into())
+                            } else {
+                                // add to list of visited typedefs
+                                from_list_reached.push(target_type_name);
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+            }
         }
 
         Ok(())
