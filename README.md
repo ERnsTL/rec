@@ -138,3 +138,4 @@ The following examples and definitions are covered by unit tests, listed by chap
 * TODO equivalent of ndbmkhash for recutils - format of this hashfile? how does it detect hashfile and database being out of sync?
 * TODO add torture tests of malformed inputs based on tests in GNU recutils
 * TODO add web interface and web API like [csvbase](https://github.com/calpaterson/csvbase)
+* TODO server resp. daemon allowing multi-user online queries without re-parsing the database for every request
