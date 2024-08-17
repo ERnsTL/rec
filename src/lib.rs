@@ -47,7 +47,7 @@ pub struct Meta {
 }
 
 #[derive(Debug)]
-pub(crate) enum Constraint {
+pub enum Constraint {
     Mandatory,
     Allowed,
     Prohibited,
@@ -71,7 +71,7 @@ impl FromStr for Constraint {
 }
 
 impl Constraint {
-    pub fn from_args(args: Vec<&str>) -> Result<Self, Err> {
+    fn from_args(args: Vec<&str>) -> Result<Self, Err> {
         Ok(Constraint::Arbitrary(args.iter().map(|a| a.to_string()).collect()))
     }
 }
