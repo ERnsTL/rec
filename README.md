@@ -60,7 +60,7 @@ The following examples and definitions are covered by unit tests, listed by chap
   * 5.4 Renaming Fields:  TODO
 * 6 Field Types:  Nothing to comply with.
   * 6.1 Declaring Types:  The typedef syntax, Define Age_t as numbers in the range 0 to 120, Type names are identifiers having the following syntax, A type can be declared to be an alias for another type, The order of the %typedef fields is not relevant, a type definition can forward-reference another type, complain if undefined types are referenced, complain if any aliases referencing in loop directly or indirectly in type declarations, The scope of a type is the record descriptor where it is defined.
-  * 6.2 Types and Fields:  TODO field_list is a list of field names separated by commas, TODO type_name_or_description can be either a type name which has been previously declared using %typedef, or a type description; TODO Anonymous types can be specified by writing a type description instead of a type name.
+  * 6.2 Types and Fields (**TODO**):  TODO field_list is a list of field names separated by commas, TODO type_name_or_description can be either a type name which has been previously declared using %typedef, or a type description; TODO Anonymous types can be specified by writing a type description instead of a type name.
   * 6.3 Scalar Field Types:  **TODO**
   * 6.4 String Field Types:  **TODO**
   * 6.5 Enumerated Field Types:  **TODO**
