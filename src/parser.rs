@@ -294,16 +294,33 @@ impl Parser {
                 Enum(variants)
             }
             type_name => {
+                // assume type alias for now
+                // NOTE: integrity checking happens later because spec requires forward-reference to yet-unseen types
                 // check for type alias
-                if self.db.recordsets[self.current_recordset].typedefs.contains_key(type_name) {
-                    // type alias
-                    return Ok(Kind::Alias(type_name.to_string()));
-                } else {
-                    // unknown
-                    return Err(format!("unknown type: {}", tt).into())
-                }
+                return Ok(Kind::Alias(type_name.to_string()));
             }
         })
+    }
+
+    fn integrity_check(&self) -> Result<(), Err> {
+        for recordset in self.db.recordsets.iter() {
+            // check typedefs
+            for (field_name, typedef) in recordset.typedefs.iter() {
+                // check type aliases resp. references
+                match &typedef.kind {
+                    Kind::Alias(target_type_name) => {
+                        // check for existence of referenced type
+                        if !recordset.typedefs.contains_key(target_type_name.as_str()) {
+                            // unknown type
+                            return Err(format!("unknown type in %typedef alias field {}: {}", field_name, target_type_name).into())
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        Ok(())
     }
 }
 
