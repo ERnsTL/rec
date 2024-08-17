@@ -138,7 +138,13 @@ The following examples and definitions are covered by unit tests, listed by chap
 
 * TODO compatibility and compliance with v1.9 from 2022
 * TODO performance comparison GNU recutils with this implementation
+* TODO performance regression monitoring over each commit - something like [Bencher](https://www.reddit.com/r/rust/comments/11xhwv3/how_to_catch_performance_regressions_in_rust/)
+* TODO serde serialization and de-serialization
+* TODO CSV
+* TODO JSON
 * TODO equivalent of ndbmkhash for recutils - format of this hashfile? how does it detect hashfile and database being out of sync?
+* TODO bash completions? make sense to do in Rust?
 * TODO add torture tests of malformed inputs based on tests in GNU recutils
+* TODO add fuzzing
 * TODO add web interface and web API like [csvbase](https://github.com/calpaterson/csvbase)
 * TODO server resp. daemon allowing multi-user online queries without re-parsing the database for every request
