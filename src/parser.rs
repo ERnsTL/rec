@@ -3284,4 +3284,24 @@ Title: Fountain Pen
             }
         }
     }
+
+    /// see manual 6.1 Declaring Types
+    #[test]
+    fn parser_6_1_complain_if_undefined_types_are_referenced() {
+        const TEXT: &str = "%rec: Item
+%typedef: Item_t        Id_t
+%typedef: Transaction_t Id_t
+";
+        // should return Err
+        match DB::new(TEXT) {
+            Ok(_) => {
+                // not good, should not return Ok
+                assert!(false);
+            },
+            Err(_) => {
+                // that is OK, should return Err
+                assert!(true);
+            }
+        }
+    }
 }
