@@ -138,9 +138,3 @@ The following examples and definitions are covered by unit tests, listed by chap
 * TODO equivalent of ndbmkhash for recutils - format of this hashfile? how does it detect hashfile and database being out of sync?
 * TODO add torture tests of malformed inputs based on tests in GNU recutils
 * TODO add web interface and web API like [csvbase](https://github.com/calpaterson/csvbase)
-
-## Remarks
-
-My hope is that some day this library will become part of bigger GUI program for managing your stuff with plain-text databases. Stale while im trying to figure out if writing complex GUI in Rust today is even possible.
-
-Drop a message to `ouxya at pm dot me` if you want to explore on this topic together.
