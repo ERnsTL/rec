@@ -312,15 +312,12 @@ impl Parser {
             // check typedefs
             for (field_name, typedef) in recordset.typedefs.iter() {
                 // check typedef aliases resp. references
-                match &typedef.kind {
-                    Kind::Alias(target_type_name) => {
-                        // check for existence of referenced type
-                        if !recordset.typedefs.contains_key(target_type_name.as_str()) {
-                            // unknown type
-                            return Err(format!("unknown type in %typedef alias field {}: {}", field_name, target_type_name).into())
-                        }
+                if let Kind::Alias(target_type_name) = &typedef.kind {
+                    // check for existence of referenced type
+                    if !recordset.typedefs.contains_key(target_type_name.as_str()) {
+                        // unknown type
+                        return Err(format!("unknown type in %typedef alias field {}: {}", field_name, target_type_name).into())
                     }
-                    _ => {}
                 }
             }
             // check for reference resp. alias loop
@@ -329,34 +326,28 @@ impl Parser {
             // NOTE: loop is detected if target type is in list of already visited typedefs
             for (field_name, typedef) in recordset.typedefs.iter() {
                 // check typedef aliases resp. references
-                match &typedef.kind {
-                    Kind::Alias(target_type_name) => {
-                        let mut next_target_type_name = target_type_name;
-                        let mut from_list_reached: Vec<&String> = vec![];
-                        loop {
-                            if from_list_reached.contains(&next_target_type_name) {
-                                // loop detected
-                                return Err(format!("%typedef alias loop detected in %typedef alias field {} referencing {}", field_name, target_type_name).into())
+                if let Kind::Alias(target_type_name) = &typedef.kind {
+                    let mut next_target_type_name = target_type_name;
+                    let mut from_list_reached: Vec<&String> = vec![];
+                    loop {
+                        if from_list_reached.contains(&next_target_type_name) {
+                            // loop detected
+                            return Err(format!("%typedef alias loop detected in %typedef alias field {} referencing {}", field_name, target_type_name).into())
+                        } else {
+                            // prepare next iteration or exit
+                            let next_typedef = recordset.typedefs.get(next_target_type_name).unwrap();
+                            // check for another alias/reference
+                            if let Kind::Alias(next_target_type_name2) = &next_typedef.kind {
+                                // update next target type name
+                                next_target_type_name = next_target_type_name2;
+                                // add to list of visited typedefs
+                                from_list_reached.push(next_target_type_name);
                             } else {
-                                // prepare next iteration or exit
-                                let next_typedef = recordset.typedefs.get(next_target_type_name).unwrap();
-                                match &next_typedef.kind {
-                                    // got another alias/reference
-                                    Kind::Alias(next_target_type_name2) => {
-                                        // update next target type name
-                                        next_target_type_name = next_target_type_name2;
-                                        // add to list of visited typedefs
-                                        from_list_reached.push(next_target_type_name);
-                                    }
-                                    _ => {
-                                        // end of reference chain reached
-                                        break;
-                                    }
-                                }
+                                // end of reference chain reached
+                                break;
                             }
                         }
-                    },
-                    _ => {}
+                    }
                 }
             }
         }
@@ -468,7 +459,7 @@ mod tests {
             assert!(variants.contains("done"));
             assert!(variants.contains("error"));
         } else {
-            panic!("unexpected type")
+            panic!("unexpected type");
         }
 
         assert!(parse_value(&meta.kind, &"Done".to_owned()).is_ok());
