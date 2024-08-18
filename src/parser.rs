@@ -608,15 +608,14 @@ Location: home
         assert!(!type_location2.unique);
         assert!(type_location2.constraint.is_none());
         assert!(matches!(type_location2.kind, Kind::Enum(_)));
-        match &type_location2.kind {
-            Kind::Enum(set) => {
-                let mut left = set.iter().collect::<Vec<_>>();
-                left.sort();
-                let mut right = vec!["loaned", "home", "unknown"];
-                right.sort();
-                assert_eq!(left, right);
-            }
-            _ => { assert!(false); }
+        if let Kind::Enum(set) = &type_location2.kind {
+            let mut left = set.iter().collect::<Vec<_>>();
+            left.sort();
+            let mut right = vec!["loaned", "home", "unknown"];
+            right.sort();
+            assert_eq!(left, right);
+        } else {
+            assert!(false);
         }
 
         //Author optional no-constraints
@@ -695,12 +694,11 @@ Location: home
         assert_eq!(rs.records[0].is_vec("Name"), false);
         // name is a Line type
         let name = rs.records[0].get("Name").unwrap();
-        match &name {
-            Value::Line(thestr) => {
-                // Name is Ada Lovelace
-                assert_eq!(*thestr, "Ada Lovelace".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &name {
+            // Name is Ada Lovelace
+            assert_eq!(*thestr, "Ada Lovelace".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -849,28 +847,25 @@ nAmE: Foo3
         assert_eq!(rs.records[0].is_vec("name"), false);
         assert_eq!(rs.records[0].is_vec("nAmE"), false);
         // Name is a Line type
-        match &rs.records[0].get("Name").unwrap() {
-            Value::Line(thestr) => {
-                // Name matches
-                assert_eq!(*thestr, "Foo1".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Name").unwrap() {
+            // Name matches
+            assert_eq!(*thestr, "Foo1".to_owned());
+        } else {
+            assert!(false);
         }
         // name is a Line type
-        match &rs.records[0].get("name").unwrap() {
-            Value::Line(thestr) => {
-                // Name matches
-                assert_eq!(*thestr, "Foo2".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("name").unwrap() {
+            // Name matches
+            assert_eq!(*thestr, "Foo2".to_owned());
+        } else {
+            assert!(false);
         }
         // nAmE is a Line type
-        match &rs.records[0].get("nAmE").unwrap() {
-            Value::Line(thestr) => {
-                // Name matches
-                assert_eq!(*thestr, "Foo3".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("nAmE").unwrap() {
+            // Name matches
+            assert_eq!(*thestr, "Foo3".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -907,44 +902,39 @@ A_Field:
         assert_eq!(rs.records[0].is_vec("A_Field"), false);
         // Foo is a Line type
         let empty = "".to_owned();
-        match &rs.records[0].get("Foo").unwrap() {
-            Value::Line(thestr) => {
-                // value matches
-                assert_eq!(*thestr, empty);
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Foo").unwrap() {
+            // value matches
+            assert_eq!(*thestr, empty);
+        } else {
+            assert!(false);
         }
         // foo is a Line type
-        match &rs.records[0].get("foo").unwrap() {
-            Value::Line(thestr) => {
-                // Name matches
-                assert_eq!(*thestr, empty);
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("foo").unwrap() {
+            // Name matches
+            assert_eq!(*thestr, empty);
+        } else {
+            assert!(false);
         }
         // A23 is a Line type
-        match &rs.records[0].get("A23").unwrap() {
-            Value::Line(thestr) => {
-                // Name matches
-                assert_eq!(*thestr, empty);
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("A23").unwrap() {
+            // Name matches
+            assert_eq!(*thestr, empty);
+        } else {
+            assert!(false);
         }
         // ab1 is a Line type
-        match &rs.records[0].get("ab1").unwrap() {
-            Value::Line(thestr) => {
-                // Name matches
-                assert_eq!(*thestr, empty);
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("ab1").unwrap() {
+            // Name matches
+            assert_eq!(*thestr, empty);
+        } else {
+            assert!(false);
         }
         // A_Field is a Line type
-        match &rs.records[0].get("A_Field").unwrap() {
-            Value::Line(thestr) => {
-                // Name matches
-                assert_eq!(*thestr, empty);
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("A_Field").unwrap() {
+            // Name matches
+            assert_eq!(*thestr, empty);
+        } else {
+            assert!(false);
         }
     }
 
@@ -987,12 +977,11 @@ A_Field:
         // fields are no multi-fields, but recognized as separate fields
         assert_eq!(rs.records[0].is_vec("Name"), false);
         // Name is a Line type
-        match &rs.records[0].get("Name").unwrap() {
-            Value::Line(thestr) => {
-                // value matches
-                assert_eq!(*thestr, "Mr. Customer".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Name").unwrap() {
+            // value matches
+            assert_eq!(*thestr, "Mr. Customer".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1017,12 +1006,11 @@ A_Field:
         // fields are no multi-fields, but recognized as separate fields
         assert_eq!(rs.records[0].is_vec("Name"), false);
         // Name is a Line type
-        match &rs.records[0].get("Name").unwrap() {
-            Value::Line(thestr) => {
-                // value matches
-                assert_eq!(*thestr, "Mr. Customer says \"So much wow!\", yet it seems fun, ain't it? Smells like Mötör's Head 😂".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Name").unwrap() {
+            // value matches
+            assert_eq!(*thestr, "Mr. Customer says \"So much wow!\", yet it seems fun, ain't it? Smells like Mötör's Head 😂".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1049,12 +1037,11 @@ A_Field:
         // fields are no multi-fields, but recognized as separate fields
         assert_eq!(rs.records[0].is_vec("Foo"), false);
         // Name is a Line type
-        match &rs.records[0].get("Foo").unwrap() {
-            Value::Line(thestr) => {
-                // value matches
-                assert_eq!(*thestr, "bar1\nbar2\n bar3".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Foo").unwrap() {
+            // value matches
+            assert_eq!(*thestr, "bar1\nbar2\n bar3".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1078,13 +1065,12 @@ A_Field:
         // fields are no multi-fields, but recognized as separate fields
         assert_eq!(rs.records[0].is_vec("Foo"), false);
         // Name is a Line type
-        match &rs.records[0].get("Foo").unwrap() {
-            Value::Line(thestr) => {
-                // value matches
-                // NOTE: GNU recutils also does not return the " " after "Foo:"
-                assert_eq!(*thestr, "bar2\n bar3".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Foo").unwrap() {
+            // value matches
+            // NOTE: GNU recutils also does not return the " " after "Foo:"
+            assert_eq!(*thestr, "bar2\n bar3".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1108,13 +1094,12 @@ A_Field:
         // fields are no multi-fields, but recognized as separate fields
         assert_eq!(rs.records[0].is_vec("Foo"), false);
         // Name is a Line type
-        match &rs.records[0].get("Foo").unwrap() {
-            Value::Line(thestr) => {
-                // value matches
-                // NOTE: GNU recutils also does not return the " " after "Foo:"
-                assert_eq!(*thestr, "bar2\n bar3".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Foo").unwrap() {
+            // value matches
+            // NOTE: GNU recutils also does not return the " " after "Foo:"
+            assert_eq!(*thestr, "bar2\n bar3".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1138,13 +1123,12 @@ A_Field:
         // fields are no multi-fields, but recognized as separate fields
         assert_eq!(rs.records[0].is_vec("Foo"), false);
         // Name is a Line type
-        match &rs.records[0].get("Foo").unwrap() {
-            Value::Line(thestr) => {
-                // value matches
-                // NOTE: GNU recutils preserves the space
-                assert_eq!(*thestr, " \nbar2\n bar3".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Foo").unwrap() {
+            // value matches
+            // NOTE: GNU recutils preserves the space
+            assert_eq!(*thestr, " \nbar2\n bar3".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1172,28 +1156,25 @@ Name2: Value3
         assert_eq!(rs.records[0].is_vec("Name1"), false);
         assert_eq!(rs.records[0].is_vec("Name2"), true);
         // Name1 is a Line type
-        match &rs.records[0].get("Name1").unwrap() {
-            Value::Line(thestr) => {
-                // Name matches
-                assert_eq!(*thestr, "Value1".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Name1").unwrap() {
+            // Name matches
+            assert_eq!(*thestr, "Value1".to_owned());
+        } else {
+            assert!(false);
         }
         // Name2 is a Line type
         let name2 = rs.records[0].get_vec("Name2").unwrap();
-        match &name2[0] {
-            Value::Line(thestr) => {
-                // Name matches
-                assert_eq!(*thestr, "Value2".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &name2[0] {
+            // Name matches
+            assert_eq!(*thestr, "Value2".to_owned());
+        } else {
+            assert!(false);
         }
-        match &name2[1] {
-            Value::Line(thestr) => {
-                // Name matches
-                assert_eq!(*thestr, "Value3".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &name2[1] {
+            // Name matches
+            assert_eq!(*thestr, "Value3".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1275,20 +1256,18 @@ Occupation: Unoccupied
         assert_eq!(rs.records[0].is_vec("Name"), false);
         assert_eq!(rs.records[0].is_vec("Occupation"), false);
         // Name is a Line type
-        match &rs.records[0].get("Name").unwrap() {
-            Value::Line(thestr) => {
-                // value matches
-                assert_eq!(*thestr, "Jose E. Marchesi".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Name").unwrap() {
+            // value matches
+            assert_eq!(*thestr, "Jose E. Marchesi".to_owned());
+        } else {
+            assert!(false);
         }
         // Occupation is a Line type
-        match &rs.records[0].get("Occupation").unwrap() {
-            Value::Line(thestr) => {
-                // value matches
-                assert_eq!(*thestr, "Unoccupied".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Occupation").unwrap() {
+            // value matches
+            assert_eq!(*thestr, "Unoccupied".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1323,12 +1302,11 @@ Name: Road Runner
         // fields are no multi-fields, but recognized as separate fields
         assert_eq!(rs.records[0].is_vec("Name"), false);
         // Name is a Line type
-        match &rs.records[0].get("Name").unwrap() {
-            Value::Line(thestr) => {
-                // value matches
-                assert_eq!(*thestr, "Road Runner".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Name").unwrap() {
+            // value matches
+            assert_eq!(*thestr, "Road Runner".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1354,12 +1332,11 @@ Age: 53
         // fields are no multi-fields, but recognized as separate fields
         assert_eq!(rs.records[0].is_vec("Name"), false);
         // Name is a Line type
-        match &rs.records[0].get("Name").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Peter the Great # Russian Tsar".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Name").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Peter the Great # Russian Tsar".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1395,20 +1372,18 @@ Name: Entry 2
         assert_eq!(rs.records[0].is_vec("Id"), false);
         assert_eq!(rs.records[0].is_vec("Name"), false);
         // Id is a Line type
-        match &rs.records[0].get("Id").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "1".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "1".to_owned());
+        } else {
+            assert!(false);
         }
         // Name is a Line type
-        match &rs.records[0].get("Name").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Entry 1".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs.records[0].get("Name").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Entry 1".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1462,20 +1437,18 @@ Date: 21 April 2011
         assert_eq!(rs0.records[0].is_vec("Id"), false);
         assert_eq!(rs0.records[0].is_vec("Title"), false);
         // Id is a Line type
-        match &rs0.records[0].get("Id").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "1".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[0].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "1".to_owned());
+        } else {
+            assert!(false);
         }
         // Title is a Line type
-        match &rs0.records[0].get("Title").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Article 1".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[0].get("Title").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Article 1".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check record[1]
@@ -1486,20 +1459,18 @@ Date: 21 April 2011
         assert_eq!(rs0.records[1].is_vec("Id"), false);
         assert_eq!(rs0.records[1].is_vec("Title"), false);
         // Id is a Line type
-        match &rs0.records[1].get("Id").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "2".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[1].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "2".to_owned());
+        } else {
+            assert!(false);
         }
         // Title is a Line type
-        match &rs0.records[1].get("Title").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Article 2".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[1].get("Title").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Article 2".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check recordset[1]
@@ -1524,28 +1495,25 @@ Date: 21 April 2011
         assert_eq!(rs1.records[0].is_vec("Type"), false);
         assert_eq!(rs1.records[0].is_vec("Date"), false);
         // Id is a Line type
-        match &rs1.records[0].get("Id").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "1".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[0].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "1".to_owned());
+        } else {
+            assert!(false);
         }
         // Type is a Line type
-        match &rs1.records[0].get("Type").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "sell".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[0].get("Type").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "sell".to_owned());
+        } else {
+            assert!(false);
         }
         // Date is a Line type
-        match &rs1.records[0].get("Date").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "20 April 2011".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[0].get("Date").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "20 April 2011".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check records[1]
@@ -1558,28 +1526,25 @@ Date: 21 April 2011
         assert_eq!(rs1.records[1].is_vec("Type"), false);
         assert_eq!(rs1.records[1].is_vec("Date"), false);
         // Id is a Line type
-        match &rs1.records[1].get("Id").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "2".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[1].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "2".to_owned());
+        } else {
+            assert!(false);
         }
         // Type is a Line type
-        match &rs1.records[1].get("Type").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "stock".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[1].get("Type").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "stock".to_owned());
+        } else {
+            assert!(false);
         }
         // Date is a Line type
-        match &rs1.records[1].get("Date").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "21 April 2011".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[1].get("Date").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "21 April 2011".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1710,20 +1675,18 @@ Concept: 12
         assert_eq!(rs0.records[0].is_vec("Id"), false);
         assert_eq!(rs0.records[0].is_vec("Title"), false);
         // Id is a Line type
-        match &rs0.records[0].get("Id").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "1".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[0].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "1".to_owned());
+        } else {
+            assert!(false);
         }
         // Title is a Line type
-        match &rs0.records[0].get("Title").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Blah".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[0].get("Title").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Blah".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check record[1]
@@ -1734,20 +1697,18 @@ Concept: 12
         assert_eq!(rs0.records[1].is_vec("Id"), false);
         assert_eq!(rs0.records[1].is_vec("Title"), false);
         // Id is a Line type
-        match &rs0.records[1].get("Id").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "2".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[1].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "2".to_owned());
+        } else {
+            assert!(false);
         }
         // Title is a Line type
-        match &rs0.records[1].get("Title").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Bleh".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[1].get("Title").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Bleh".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check recordset[1]
@@ -1770,20 +1731,18 @@ Concept: 12
         assert_eq!(rs1.records[0].is_vec("Date"), false);
         assert_eq!(rs1.records[0].is_vec("Concept"), false);
         // Id is a Line type
-        match &rs1.records[0].get("Date").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "13-Aug-2012".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[0].get("Date").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "13-Aug-2012".to_owned());
+        } else {
+            assert!(false);
         }
         // Type is a Line type
-        match &rs1.records[0].get("Concept").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "20".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[0].get("Concept").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "20".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check records[1]
@@ -1794,20 +1753,18 @@ Concept: 12
         assert_eq!(rs1.records[1].is_vec("Date"), false);
         assert_eq!(rs1.records[1].is_vec("Concept"), false);
         // Id is a Line type
-        match &rs1.records[1].get("Date").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "24-Sept-2012".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[1].get("Date").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "24-Sept-2012".to_owned());
+        } else {
+            assert!(false);
         }
         // Type is a Line type
-        match &rs1.records[1].get("Concept").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "12".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[1].get("Concept").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "12".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -1994,20 +1951,18 @@ Phone: +33 34 87 65
         assert_eq!(rs0.records[0].is_vec("Name"), false);
         assert_eq!(rs0.records[0].is_vec("Phone"), false);
         // Name is a Line type
-        match &rs0.records[0].get("Name").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Granny".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[0].get("Name").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Granny".to_owned());
+        } else {
+            assert!(false);
         }
         // Phone is a Line type
-        match &rs0.records[0].get("Phone").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "+12 23456677".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[0].get("Phone").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "+12 23456677".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check record[1]
@@ -2018,20 +1973,18 @@ Phone: +33 34 87 65
         assert_eq!(rs0.records[1].is_vec("Name"), false);
         assert_eq!(rs0.records[1].is_vec("Phone"), false);
         // Name is a Line type
-        match &rs0.records[1].get("Name").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Edwina".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[1].get("Name").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Edwina".to_owned());
+        } else {
+            assert!(false);
         }
         // Phone is a Line type
-        match &rs0.records[1].get("Phone").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "+55 0923 8765".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[1].get("Phone").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "+55 0923 8765".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check recordset[1]
@@ -2058,20 +2011,18 @@ Phone: +33 34 87 65
         assert_eq!(rs1.records[0].is_vec("Name"), false);
         assert_eq!(rs1.records[0].is_vec("Phone"), false);
         // Name is a Line type
-        match &rs1.records[0].get("Name").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Karl Schmidt".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[0].get("Name").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Karl Schmidt".to_owned());
+        } else {
+            assert!(false);
         }
         // Phone is a Line type
-        match &rs1.records[0].get("Phone").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "+49 88234566".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[0].get("Phone").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "+49 88234566".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check records[1]
@@ -2082,20 +2033,18 @@ Phone: +33 34 87 65
         assert_eq!(rs1.records[1].is_vec("Name"), false);
         assert_eq!(rs1.records[1].is_vec("Phone"), false);
         // Name is a Line type
-        match &rs1.records[1].get("Name").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Genevieve Curie".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[1].get("Name").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Genevieve Curie".to_owned());
+        } else {
+            assert!(false);
         }
         // Phone is a Line type
-        match &rs1.records[1].get("Phone").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "+33 34 87 65".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs1.records[1].get("Phone").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "+33 34 87 65".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -2133,15 +2082,12 @@ Title: Fountain Pen
         if let Some(thetype) = rs0.types.get("Id") {
             // check for type of field
             //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
-            match &thetype.kind {
-                Kind::Int => {
-                    // this is OK
-                    assert!(true);
-                }
-                _ => {
-                    // this is not OK
-                    assert!(false);
-                }
+            if let Kind::Int = &thetype.kind {
+                // this is OK
+                assert!(true);
+            } else {
+                // this is not OK
+                assert!(false);
             }
             // check for uniqueness constraint
             assert_eq!(&thetype.unique, &false);
@@ -2154,29 +2100,23 @@ Title: Fountain Pen
         if let Some(thetype) = rs0.types.get("Title") {
             // check for type of field
             //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
-            match &thetype.kind {
-                Kind::Line => {
-                    // this is OK
-                    assert!(true);
-                }
-                _ => {
-                    // this is not OK
-                    assert!(false);
-                }
+            if let Kind::Line = &thetype.kind {
+                // this is OK
+                assert!(true);
+            } else {
+                // this is not OK
+                assert!(false);
             }
             // check for uniqueness constraint
             assert_eq!(&thetype.unique, &false);
             // check for a constraint
             if let Some(constraint) = &thetype.constraint {
-                match constraint {
-                    Constraint::Mandatory => {
-                        // this is OK
-                        assert!(true);
-                    }
-                    _ => {
-                        // this is not OK
-                        assert!(false);
-                    }
+                if let Constraint::Mandatory = constraint {
+                    // this is OK
+                    assert!(true);
+                } else {
+                    // this is not OK
+                    assert!(false);
                 }
             } else {
                 assert!(false);
@@ -2202,20 +2142,18 @@ Title: Fountain Pen
         assert_eq!(rs0.records[0].is_vec("Id"), false);
         assert_eq!(rs0.records[0].is_vec("Title"), false);
         // Id is an Int type
-        match &rs0.records[0].get("Id").unwrap() {
-            Value::Int(theint) => {
-                // value matches - this is not a comment
-                assert_eq!(*theint, 10);
-            }
-            _ => { assert!(false); }
+        if let Value::Int(theint) = &rs0.records[0].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*theint, 10);
+        } else {
+            assert!(false);
         }
         // Title is a Line type
-        match &rs0.records[0].get("Title").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Notebook (big)".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[0].get("Title").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Notebook (big)".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check record[1]
@@ -2226,20 +2164,18 @@ Title: Fountain Pen
         assert_eq!(rs0.records[1].is_vec("Id"), false);
         assert_eq!(rs0.records[1].is_vec("Title"), false);
         // Id is an Int type
-        match &rs0.records[1].get("Id").unwrap() {
-            Value::Int(theint) => {
-                // value matches - this is not a comment
-                assert_eq!(*theint, 11);
-            }
-            _ => { assert!(false); }
+        if let Value::Int(theint) = &rs0.records[1].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*theint, 11);
+        } else {
+            assert!(false);
         }
         // Title is a Line type
-        match &rs0.records[1].get("Title").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Fountain Pen".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[1].get("Title").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Fountain Pen".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -2277,15 +2213,12 @@ Title: Fountain Pen
         if let Some(thetype) = rs0.types.get("Id") {
             // check for type of field
             //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
-            match &thetype.kind {
-                Kind::Int => {
-                    // this is OK
-                    assert!(true);
-                }
-                _ => {
-                    // this is not OK
-                    assert!(false);
-                }
+            if let Kind::Int = &thetype.kind {
+                // this is OK
+                assert!(true);
+            } else {
+                // this is not OK
+                assert!(false);
             }
             // check for uniqueness constraint
             assert_eq!(&thetype.unique, &false);
@@ -2298,29 +2231,23 @@ Title: Fountain Pen
         if let Some(thetype) = rs0.types.get("Title") {
             // check for type of field
             //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
-            match &thetype.kind {
-                Kind::Line => {
-                    // this is OK
-                    assert!(true);
-                }
-                _ => {
-                    // this is not OK
-                    assert!(false);
-                }
+            if let Kind::Line = &thetype.kind {
+                // this is OK
+                assert!(true);
+            } else {
+                // this is not OK
+                assert!(false);
             }
             // check for uniqueness constraint
             assert_eq!(&thetype.unique, &false);
             // check for a constraint
             if let Some(constraint) = &thetype.constraint {
-                match constraint {
-                    Constraint::Mandatory => {
-                        // this is OK
-                        assert!(true);
-                    }
-                    _ => {
-                        // this is not OK
-                        assert!(false);
-                    }
+                if let Constraint::Mandatory = constraint {
+                    // this is OK
+                    assert!(true);
+                } else {
+                    // this is not OK
+                    assert!(false);
                 }
             } else {
                 assert!(false);
@@ -2346,20 +2273,18 @@ Title: Fountain Pen
         assert_eq!(rs0.records[0].is_vec("Id"), false);
         assert_eq!(rs0.records[0].is_vec("Title"), false);
         // Id is an Int type
-        match &rs0.records[0].get("Id").unwrap() {
-            Value::Int(theint) => {
-                // value matches - this is not a comment
-                assert_eq!(*theint, 10);
-            }
-            _ => { assert!(false); }
+        if let Value::Int(theint) = &rs0.records[0].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*theint, 10);
+        } else {
+            assert!(false);
         }
         // Title is a Line type
-        match &rs0.records[0].get("Title").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Notebook (big)".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[0].get("Title").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Notebook (big)".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check record[1]
@@ -2370,20 +2295,18 @@ Title: Fountain Pen
         assert_eq!(rs0.records[1].is_vec("Id"), false);
         assert_eq!(rs0.records[1].is_vec("Title"), false);
         // Id is an Int type
-        match &rs0.records[1].get("Id").unwrap() {
-            Value::Int(theint) => {
-                // value matches - this is not a comment
-                assert_eq!(*theint, 11);
-            }
-            _ => { assert!(false); }
+        if let Value::Int(theint) = &rs0.records[1].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*theint, 11);
+        } else {
+            assert!(false);
         }
         // Title is a Line type
-        match &rs0.records[1].get("Title").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Fountain Pen".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[1].get("Title").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Fountain Pen".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -2423,15 +2346,12 @@ Title: Fountain Pen
         if let Some(thetype) = rs0.types.get("Id") {
             // check for type of field
             //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
-            match &thetype.kind {
-                Kind::Int => {
-                    // this is OK
-                    assert!(true);
-                }
-                _ => {
-                    // this is not OK
-                    assert!(false);
-                }
+            if let Kind::Int = &thetype.kind {
+                // this is OK
+                assert!(true);
+            } else {
+                // this is not OK
+                assert!(false);
             }
             // check for uniqueness constraint
             assert_eq!(&thetype.unique, &false);
@@ -2444,29 +2364,23 @@ Title: Fountain Pen
         if let Some(thetype) = rs0.types.get("Title") {
             // check for type of field
             //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
-            match &thetype.kind {
-                Kind::Line => {
-                    // this is OK
-                    assert!(true);
-                }
-                _ => {
-                    // this is not OK
-                    assert!(false);
-                }
+            if let Kind::Line = &thetype.kind {
+                // this is OK
+                assert!(true);
+            } else {
+                // this is not OK
+                assert!(false);
             }
             // check for uniqueness constraint
             assert_eq!(&thetype.unique, &false);
             // check for a constraint
             if let Some(constraint) = &thetype.constraint {
-                match constraint {
-                    Constraint::Mandatory => {
-                        // this is OK
-                        assert!(true);
-                    }
-                    _ => {
-                        // this is not OK
-                        assert!(false);
-                    }
+                if let Constraint::Mandatory = constraint {
+                    // this is OK
+                    assert!(true);
+                } else {
+                    // this is not OK
+                    assert!(false);
                 }
             } else {
                 assert!(false);
@@ -2492,20 +2406,18 @@ Title: Fountain Pen
         assert_eq!(rs0.records[0].is_vec("Id"), false);
         assert_eq!(rs0.records[0].is_vec("Title"), false);
         // Id is an Int type
-        match &rs0.records[0].get("Id").unwrap() {
-            Value::Int(theint) => {
-                // value matches - this is not a comment
-                assert_eq!(*theint, 10);
-            }
-            _ => { assert!(false); }
+        if let Value::Int(theint) = &rs0.records[0].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*theint, 10);
+        } else {
+            assert!(false);
         }
         // Title is a Line type
-        match &rs0.records[0].get("Title").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Notebook (big)".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[0].get("Title").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Notebook (big)".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check record[1]
@@ -2516,20 +2428,18 @@ Title: Fountain Pen
         assert_eq!(rs0.records[1].is_vec("Id"), false);
         assert_eq!(rs0.records[1].is_vec("Title"), false);
         // Id is an Int type
-        match &rs0.records[1].get("Id").unwrap() {
-            Value::Int(theint) => {
-                // value matches - this is not a comment
-                assert_eq!(*theint, 11);
-            }
-            _ => { assert!(false); }
+        if let Value::Int(theint) = &rs0.records[1].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*theint, 11);
+        } else {
+            assert!(false);
         }
         // Title is a Line type
-        match &rs0.records[1].get("Title").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Fountain Pen".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[1].get("Title").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Fountain Pen".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -2612,15 +2522,12 @@ Title: Fountain Pen
         if let Some(thetype) = rs0.types.get("Id") {
             // check for type of field
             //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
-            match &thetype.kind {
-                Kind::Int => {
-                    // this is OK
-                    assert!(true);
-                }
-                _ => {
-                    // this is not OK
-                    assert!(false);
-                }
+            if let Kind::Int = &thetype.kind {
+                // this is OK
+                assert!(true);
+            } else {
+                // this is not OK
+                assert!(false);
             }
             // check for uniqueness constraint
             assert_eq!(&thetype.unique, &false);
@@ -2633,29 +2540,23 @@ Title: Fountain Pen
         if let Some(thetype) = rs0.types.get("Title") {
             // check for type of field
             //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
-            match &thetype.kind {
-                Kind::Line => {
-                    // this is OK
-                    assert!(true);
-                }
-                _ => {
-                    // this is not OK
-                    assert!(false);
-                }
+            if let Kind::Line = &thetype.kind {
+                // this is OK
+                assert!(true);
+            } else {
+                // this is not OK
+                assert!(false);
             }
             // check for uniqueness constraint
             assert_eq!(&thetype.unique, &false);
             // check for a constraint
             if let Some(constraint) = &thetype.constraint {
-                match constraint {
-                    Constraint::Mandatory => {
-                        // this is OK
-                        assert!(true);
-                    }
-                    _ => {
-                        // this is not OK
-                        assert!(false);
-                    }
+                if let Constraint::Mandatory = constraint {
+                    // this is OK
+                    assert!(true);
+                } else {
+                    // this is not OK
+                    assert!(false);
                 }
             } else {
                 assert!(false);
@@ -2681,20 +2582,18 @@ Title: Fountain Pen
         assert_eq!(rs0.records[0].is_vec("Id"), false);
         assert_eq!(rs0.records[0].is_vec("Title"), false);
         // Id is an Int type
-        match &rs0.records[0].get("Id").unwrap() {
-            Value::Int(theint) => {
-                // value matches - this is not a comment
-                assert_eq!(*theint, 10);
-            }
-            _ => { assert!(false); }
+        if let Value::Int(theint) = &rs0.records[0].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*theint, 10);
+        } else {
+            assert!(false);
         }
         // Title is a Line type
-        match &rs0.records[0].get("Title").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Notebook (big)".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[0].get("Title").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Notebook (big)".to_owned());
+        } else {
+            assert!(false);
         }
 
         // check record[1]
@@ -2705,20 +2604,18 @@ Title: Fountain Pen
         assert_eq!(rs0.records[1].is_vec("Id"), false);
         assert_eq!(rs0.records[1].is_vec("Title"), false);
         // Id is an Int type
-        match &rs0.records[1].get("Id").unwrap() {
-            Value::Int(theint) => {
-                // value matches - this is not a comment
-                assert_eq!(*theint, 11);
-            }
-            _ => { assert!(false); }
+        if let Value::Int(theint) = &rs0.records[1].get("Id").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*theint, 11);
+        } else {
+            assert!(false);
         }
         // Title is a Line type
-        match &rs0.records[1].get("Title").unwrap() {
-            Value::Line(thestr) => {
-                // value matches - this is not a comment
-                assert_eq!(*thestr, "Fountain Pen".to_owned());
-            }
-            _ => { assert!(false); }
+        if let Value::Line(thestr) = &rs0.records[1].get("Title").unwrap() {
+            // value matches - this is not a comment
+            assert_eq!(*thestr, "Fountain Pen".to_owned());
+        } else {
+            assert!(false);
         }
     }
 
@@ -3062,15 +2959,12 @@ Title: Fountain Pen
         if let Some(thetypedef) = rs0.typedefs.get("Test_t") {
             // check for type of field
             //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
-            match &thetypedef.kind {
-                Kind::Int => {
-                    // this is OK
-                    assert!(true);
-                }
-                _ => {
-                    // this is not OK
-                    assert!(false);
-                }
+            if let Kind::Int = &thetypedef.kind {
+                // this is OK
+                assert!(true);
+            } else {
+                // this is not OK
+                assert!(false);
             }
             // check for uniqueness constraint
             assert_eq!(&thetypedef.unique, &false);
@@ -3116,16 +3010,13 @@ Title: Fountain Pen
         if let Some(thetypedef) = rs0.typedefs.get("Age_t") {
             // check for type of field
             //NOTE: cannot implement PartialEq for Kind, so we have to do it manually
-            match &thetypedef.kind {
-                Kind::Range(min, max) => {
-                    // this is OK
-                    assert_eq!(*min, 0);
-                    assert_eq!(*max, 120)
-                }
-                _ => {
-                    // this is not OK
-                    assert!(false);
-                }
+            if let Kind::Range(min, max) = &thetypedef.kind {
+                // this is OK
+                assert_eq!(*min, 0);
+                assert_eq!(*max, 120)
+            } else {
+                // this is not OK
+                assert!(false);
             }
             // check for uniqueness constraint
             assert_eq!(&thetypedef.unique, &false);
