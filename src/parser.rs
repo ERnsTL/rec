@@ -1798,16 +1798,12 @@ Concept: 12
     fn parser_2_4_2_allowed_characters_in_record_types2() {
         const TEXT: &str = "%rec: _1badname
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -1816,16 +1812,12 @@ Concept: 12
     fn parser_2_4_2_allowed_characters_in_record_types3() {
         const TEXT: &str = "%rec: 2badname
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -1834,16 +1826,12 @@ Concept: 12
     fn parser_2_4_2_allowed_characters_in_record_types4() {
         const TEXT: &str = "%rec: abad-name
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -1853,16 +1841,12 @@ Concept: 12
         const TEXT: &str = "%rec: Contact
 %doc: A more verbose description! Yes: This is the way.
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2452,16 +2436,12 @@ Title: Fountain Pen
 Id: 10
 Title: Notebook (big)
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2475,16 +2455,12 @@ Title: Notebook (big)
 Id: 10
 Title: Notebook (big)
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2624,16 +2600,12 @@ Title: Fountain Pen
     fn parser_2_4_4_special_fields_defined_in_the_recutils_format_rec() {
         const TEXT: &str = "%rec: Item
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2643,16 +2615,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %mandatory: Title
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2662,16 +2630,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %allowed: Title
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2681,16 +2645,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %prohibit: Title
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2700,16 +2660,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %unique: Id
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2719,16 +2675,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %key: Id
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2738,16 +2690,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %doc: Some nice doc string
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2757,16 +2705,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %typedef: Id_t int
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2776,16 +2720,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %type: Id int
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2796,16 +2736,12 @@ Title: Fountain Pen
 %key: Id
 %auto: Id
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2816,16 +2752,12 @@ Title: Fountain Pen
 %type: Date date
 %sort: Date
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2835,16 +2767,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %size: <= 100
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2856,16 +2784,12 @@ Title: Fountain Pen
 %type: End date
 %constraint: Start << End
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2876,16 +2800,12 @@ Title: Fountain Pen
 %type: Start,End date
 %constraint: Start << End
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2895,16 +2815,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Account
 %confidential: Password
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -2917,16 +2833,12 @@ Title: Fountain Pen
 %special: SomethingInvalid
 %another: SpecialInvalid
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3039,16 +2951,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %typedef: age_t int
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3058,16 +2966,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %typedef: age-t int
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3077,16 +2981,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %typedef: 9age_t int
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3096,16 +2996,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %typedef: age_t9 int
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3115,16 +3011,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %typedef: _Age_t int
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3134,16 +3026,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %typedef: Ag👎e_t int
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3153,16 +3041,12 @@ Title: Fountain Pen
         const TEXT: &str = "%rec: Item
 %typedef: Ageäöü_t int
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3174,16 +3058,12 @@ Title: Fountain Pen
 %typedef: Item_t        Id_t
 %typedef: Transaction_t Id_t
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3195,16 +3075,12 @@ Title: Fountain Pen
 %typedef: Transaction_t Id_t
 %typedef: Item_t        Id_t
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3216,16 +3092,12 @@ Title: Fountain Pen
 %typedef: Transaction_t Id_t
 %typedef: Id_t          int
 ";
+
         // should return Ok
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // that is OK, should return Ok
-                assert!(true);
-            },
-            Err(_) => {
-                // not good, should not return Err
-                assert!(false);
-            }
+        if let Ok(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3236,16 +3108,12 @@ Title: Fountain Pen
 %typedef: Item_t        Id_t
 %typedef: Transaction_t Id_t
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3257,16 +3125,12 @@ Title: Fountain Pen
 %typedef: B_t C_t
 %typedef: C_t A_t
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 
@@ -3281,16 +3145,12 @@ Title: Fountain Pen
 %rec: Transaction
 %typedef: Crossref      Id_t
 ";
+
         // should return Err
-        match DB::new(TEXT) {
-            Ok(_) => {
-                // not good, should not return Ok
-                assert!(false);
-            },
-            Err(_) => {
-                // that is OK, should return Err
-                assert!(true);
-            }
+        if let Err(_) = DB::new(TEXT) {
+            assert!(true);
+        } else {
+            assert!(false);
         }
     }
 }
